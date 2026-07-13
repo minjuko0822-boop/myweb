@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Growing Developer Journal | 데이터 기반 개발자 포트폴리오</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Pretendard Webfont CDN (Pretendard Bold/Regular 구현) -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <!-- JetBrains Mono Webfont (게임 UI 및 개발 테크 무드 구현) -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons for modern icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            950: '#0B0F19', // 초고대비 텍스트용
+                            900: '#0F172A', // 메인 텍스트 및 핵심 포인트 컬러
+                            800: '#1E293B', // 보조 텍스트 및 서브 타이틀
+                            700: '#334155',
+                            200: '#E2E8F0', // 연한 보더 라인
+                            100: '#F1F5F9', // 연한 서브 배경
+                            50: '#F8FAFC',
+                        },
+                        mint: {
+                            300: '#86EFAC',
+                            400: '#34D399',
+                            500: '#10B981',
+                            600: '#059669',
+                        },
+                        yellowaccent: {
+                            100: '#FEF9C3',
+                            300: '#FDE047',
+                            400: '#FACC15',
+                            500: '#EAB308',
+                        },
+                        softwhite: '#F8FAFC', // 메인 전체 배경색
+                    },
+                    fontFamily: {
+                        sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    boxShadow: {
+                        'mint-glow': '0 0 12px rgba(52, 211, 153, 0.2)',
+                        'yellow-glow': '0 0 12px rgba(250, 204, 21, 0.35)',
+                        'notebook-shadow': '0 10px 30px -10px rgba(15, 23, 42, 0.08)',
+                        'card-subtle': '0 4px 20px -2px rgba(15, 23, 42, 0.04)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Pretendard 우선 매핑 및 글로벌 보정 */
+        body {
+            font-family: 'Pretendard', -apple-system, sans-serif;
+            letter-spacing: -0.025em;
+        }
+
+        /* 라이트 모드용 스크롤바 디자인 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 9999px;
+            border: 2px solid #F1F5F9;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0F172A;
+        }
+        
+        /* 미세한 시각 피드백을 위한 애니메이션 */
+        @keyframes subtle-float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+        .animate-subtle-float {
+            animation: subtle-float 5s ease-in-out infinite;
+        }
+
+        /* 은은한 펄스 효과 */
+        @keyframes glow-pulse {
+            0%, 100% { opacity: 0.8; filter: drop-shadow(0 0 4px rgba(52, 211, 153, 0.3)); }
+            50% { opacity: 1; filter: drop-shadow(0 0 10px rgba(52, 211, 153, 0.6)); }
+        }
+        .animate-glow-pulse {
+            animation: glow-pulse 3s infinite;
+        }
+    </style>
+</head>
+<body class="bg-softwhite text-navy-900 antialiased overflow-x-hidden selection:bg-yellowaccent-300 selection:text-navy-950">
+
+    <!-- Navigation Bar (Light Mode with Glassmorphism) -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-lg border-b border-navy-200/60 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <!-- Logo / Brand Identity -->
+            <a href="#" class="flex items-center space-x-3 group">
+                <div class="w-9 h-9 rounded-xl bg-navy-900 flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-all">
+                    <i class="fa-solid fa-gamepad text-base text-mint-400"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-mono text-xs font-bold tracking-wider text-navy-900">GROWING DEV</span>
+                    <span class="text-[10px] text-slate-400 font-mono -mt-0.5">JOURNAL</span>
+                </div>
+            </a>
+            
+            <!-- Mobile Menu Trigger -->
+            <button id="menu-btn" class="md:hidden text-navy-800 hover:text-navy-950 transition-colors focus:outline-none" aria-label="메뉴 열기">
+                <i class="fa-solid fa-bars-staggered text-xl"></i>
+            </button>
+
+            <!-- Desktop Nav Menu -->
+            <nav class="hidden md:flex items-center space-x-8 text-sm">
+                <a href="#about" class="text-navy-700 hover:text-navy-950 font-semibold transition-colors">About Me</a>
+                <a href="#project" class="text-navy-700 hover:text-navy-950 font-semibold transition-colors">Project</a>
+                <a href="#skills" class="text-navy-700 hover:text-navy-950 font-semibold transition-colors">Skills</a>
+                <a href="#growth" class="text-navy-700 hover:text-navy-950 font-semibold transition-colors flex items-center gap-1.5">
+                    <span>Growth Archive</span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-mint-500 animate-pulse"></span>
+                </a>
+                <a href="#contact" class="px-4 py-2 rounded-xl bg-navy-900 text-white hover:bg-navy-800 transition-all font-mono text-xs font-bold tracking-wide shadow-md shadow-navy-900/10">
+                    CONTACT.EXE
+                </a>
+            </nav>
+        </div>
+
+        <!-- Mobile Menu (Hidden by default) -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-navy-100 px-6 py-4 space-y-3 transition-all shadow-lg">
+            <a href="#about" class="block text-navy-700 hover:text-navy-950 py-2 font-semibold">About Me</a>
+            <a href="#project" class="block text-navy-700 hover:text-navy-950 py-2 font-semibold">Project</a>
+            <a href="#skills" class="block text-navy-700 hover:text-navy-950 py-2 font-semibold">Skills</a>
+            <a href="#growth" class="block text-navy-700 hover:text-navy-950 py-2 font-semibold">Growth Archive</a>
+            <a href="#contact" class="block text-navy-950 py-2 font-mono text-sm font-bold">CONTACT.EXE</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center pt-24 overflow-hidden bg-gradient-to-b from-white via-softwhite to-slate-100">
+        <!-- Notebook Style Subtle Grid Background -->
+        <div class="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:5rem_5rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-40"></div>
+        
+        <div class="relative max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full">
+            <!-- Hero Left (Information & Introduction) -->
+            <div class="lg:col-span-7 space-y-6 text-center lg:text-left z-10">
+                <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-white border border-navy-200 text-navy-900 text-xs font-mono tracking-wider shadow-card-subtle">
+                    <span class="w-2.5 h-2.5 rounded-full bg-mint-400 animate-pulse"></span>
+                    <span class="font-bold">SYSTEM ONLINE: LIGHT_v1.2</span>
+                </div>
+                
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-navy-950">
+                    안녕하세요, <br class="hidden sm:inline">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-navy-900 to-navy-700">데이터 기반 개발자</span> <br>
+                    <span class="text-navy-950">김성장</span>입니다.
+                </h1>
+                
+                <p class="text-lg sm:text-xl font-extrabold text-navy-800 border-l-4 border-navy-900 pl-4 py-1 max-w-2xl mx-auto lg:mx-0">
+                    "데이터에서 의미를 찾고, 코드로 가치를 만드는 개발자"
+                </p>
+                
+                <p class="text-base text-slate-600 max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
+                    거시경제 수치를 전처리하고 분석한 경험을 토대로 문제의 원인을 정량적으로 진단합니다. 탄탄한 논리력을 바탕으로 가치 있는 화면과 든든한 프론트엔드를 구축하는 개발자로 도약하고 있습니다.
+                </p>
+                
+                <!-- Hero Action Buttons -->
+                <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
+                    <a href="#project" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-navy-900 text-white font-extrabold hover:bg-navy-800 hover:scale-[1.02] active:scale-[0.98] transition-all text-center flex items-center justify-center gap-2 group shadow-lg shadow-navy-950/10">
+                        <span>Portfolio 보기</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform text-mint-400"></i>
+                    </a>
+                    <a href="#about" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white border border-navy-200 text-navy-800 hover:text-navy-950 hover:border-navy-400 hover:bg-slate-50 transition-all text-center font-bold shadow-card-subtle">
+                        성장 히스토리 보기
+                    </a>
+                </div>
+            </div>
+
+            <!-- Hero Right (RPG Status Window - Light Notebook Dashboard) -->
+            <div class="lg:col-span-5 flex justify-center z-10">
+                <div class="w-full max-w-sm rounded-3xl border border-navy-200/80 bg-white p-6 shadow-notebook-shadow hover:border-navy-400/50 transition-all duration-300 animate-subtle-float relative overflow-hidden">
+                    <!-- Top Notebook Accent Ring Effects -->
+                    <div class="absolute top-0 left-0 w-full h-[6px] bg-gradient-to-r from-navy-900 to-navy-700"></div>
+                    
+                    <!-- Character Header -->
+                    <div class="flex justify-between items-center mb-6 border-b border-navy-100 pb-4">
+                        <div>
+                            <span class="font-mono text-[10px] tracking-widest text-navy-800 font-bold">DEV STATUS</span>
+                            <h3 class="text-base font-extrabold text-navy-950">김성장 (Lv.03)</h3>
+                        </div>
+                        <span class="text-[10px] font-mono bg-slate-100 px-2.5 py-1 rounded-lg text-navy-800 border border-navy-200/60 font-semibold">CLASS: ANALYST_DEV</span>
+                    </div>
+
+                    <!-- Character Avatar representation -->
+                    <div class="flex justify-center mb-6">
+                        <div class="relative w-24 h-24 rounded-2xl bg-slate-50 border border-navy-100 flex items-center justify-center overflow-hidden group">
+                            <i class="fa-solid fa-user-astronaut text-4xl text-navy-900 animate-glow-pulse"></i>
+                            <div class="absolute bottom-1.5 right-1.5 bg-yellowaccent-400 text-navy-950 rounded-lg px-1.5 py-0.5 text-[9px] font-mono font-bold shadow-sm">
+                                EXP 70%
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RPG Stats Panel -->
+                    <div class="space-y-4">
+                        <!-- STAT: Coding -->
+                        <div>
+                            <div class="flex justify-between text-xs font-bold mb-1.5">
+                                <span class="text-navy-800 flex items-center"><i class="fa-solid fa-code text-navy-900 mr-2 text-[11px]"></i>Coding Logic</span>
+                                <span class="text-navy-900 font-mono font-bold">75 / 100</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden border border-navy-200">
+                                <div class="bg-navy-900 h-full rounded-full transition-all duration-300" style="width: 75%"></div>
+                            </div>
+                        </div>
+
+                        <!-- STAT: Data Analysis -->
+                        <div>
+                            <div class="flex justify-between text-xs font-bold mb-1.5">
+                                <span class="text-navy-800 flex items-center"><i class="fa-solid fa-chart-line text-navy-900 mr-2 text-[11px]"></i>Data Analytics</span>
+                                <span class="text-navy-900 font-mono font-bold">90 / 100</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden border border-navy-200">
+                                <div class="bg-mint-500 h-full rounded-full transition-all duration-300" style="width: 90%"></div>
+                            </div>
+                        </div>
+
+                        <!-- STAT: Persistence -->
+                        <div>
+                            <div class="flex justify-between text-xs font-bold mb-1.5">
+                                <span class="text-navy-800 flex items-center"><i class="fa-solid fa-fire text-navy-900 mr-2 text-[11px]"></i>Persistence (끈기)</span>
+                                <span class="text-navy-900 font-mono font-bold">95 / 100</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden border border-navy-200">
+                                <div class="bg-yellowaccent-400 h-full rounded-full transition-all duration-300" style="width: 95%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-navy-100 flex justify-between items-center text-[11px] font-mono font-bold text-slate-500">
+                        <span>HP 820 / 820</span>
+                        <span>MP 450 / 450</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Me Section -->
+    <section id="about" class="py-24 bg-white border-y border-navy-200/60 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- Section Header -->
+            <div class="text-center mb-16 space-y-2">
+                <span class="font-mono text-xs text-navy-800 tracking-widest font-extrabold uppercase">01 / ABOUT ME</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-navy-950 tracking-tight">나는 어떤 개발자인가?</h2>
+                <div class="w-12 h-1 bg-navy-900 mx-auto rounded-full mt-3"></div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-stretch">
+                <!-- Profile Narrative (Left) -->
+                <div class="lg:col-span-7 flex flex-col justify-between space-y-6">
+                    <div class="space-y-6 text-slate-700 text-base leading-relaxed">
+                        <h3 class="text-xl sm:text-2xl font-extrabold text-navy-900 leading-tight">
+                            "데이터 분석 경험의 날카로운 정합성과 <br class="sm:hidden">개발의 역동성을 함께 품다"
+                        </h3>
+                        <p>
+                            저는 대학 학업 및 경제 분석 프로젝트에서 대규모 경제 지표 데이터를 전처리하고 통계 모델링을 수행했습니다. 단순 나열에 머무르는 정보에서 현상의 정확한 변동 추이와 정량적 인과성을 도출하는 것은 제게 논리적인 설득력을 길러주었습니다.
+                        </p>
+                        <p>
+                            여기에 안주하지 않고, <strong class="text-navy-900 font-bold underline decoration-mint-400 decoration-2">"유저가 직접 데이터를 유연하게 탐색하고 제어할 수 있는 아름다운 플랫폼"</strong>을 완성하고자 프론트엔드 핵심 개발 지식을 쌓기 시작했습니다. 분석적 직관과 웹 구현 기술을 한 몸에 품은 든든한 인재로 성장 중입니다.
+                        </p>
+                    </div>
+
+                    <!-- Core highlights list -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-6">
+                        <div class="p-4 bg-softwhite rounded-2xl border border-navy-200 shadow-card-subtle">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <span class="w-8 h-8 rounded-lg bg-navy-900 flex items-center justify-center text-white text-sm">
+                                    <i class="fa-solid fa-magnifying-glass-chart text-mint-400"></i>
+                                </span>
+                                <h4 class="font-bold text-sm text-navy-950">데이터 기반 문제 해결 사고</h4>
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed">거시경제 변수 흐름을 읽고 정교하게 결합하여 합리적인 결론과 인사이트를 이끌어냅니다.</p>
+                        </div>
+                        
+                        <div class="p-4 bg-softwhite rounded-2xl border border-navy-200 shadow-card-subtle">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <span class="w-8 h-8 rounded-lg bg-navy-900 flex items-center justify-center text-white text-sm">
+                                    <i class="fa-solid fa-arrows-spin text-yellowaccent-400"></i>
+                                </span>
+                                <h4 class="font-bold text-sm text-navy-950">자동화 및 파이프라인 최적화</h4>
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed">데이터의 수작업 처리 병목 구간과 오류 가능성을 진단하고 효율적인 자동화 과정을 지향합니다.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Core Journey Visual Timeline (Right) -->
+                <div class="lg:col-span-5 bg-softwhite rounded-3xl p-6 border border-navy-200 flex flex-col justify-between shadow-card-subtle">
+                    <div>
+                        <h4 class="font-mono text-[10px] text-navy-800 font-extrabold tracking-widest mb-6 uppercase"><i class="fa-solid fa-code-branch mr-1 text-navy-900"></i> Development Pipeline</h4>
+                        
+                        <!-- Timeline list -->
+                        <div class="space-y-6 relative before:absolute before:left-3.5 before:top-2 before:bottom-2 before:w-[2px] before:bg-navy-200">
+                            <!-- Step 1 -->
+                            <div class="flex items-start space-x-4 relative">
+                                <div class="w-7 h-7 rounded-lg bg-navy-900 text-white flex items-center justify-center text-xs font-mono font-bold shrink-0 z-10 shadow">01</div>
+                                <div>
+                                    <h5 class="text-sm font-bold text-navy-950">데이터 특화 역량 확보</h5>
+                                    <p class="text-xs text-slate-600 mt-1">R 통계 패키지 가공, GPR/EPU 지수 활용 거시경제-KOSPI 분석 프로젝트 수행.</p>
+                                </div>
+                            </div>
+
+                            <!-- Step 2 -->
+                            <div class="flex items-start space-x-4 relative">
+                                <div class="w-7 h-7 rounded-lg bg-white border-2 border-navy-900 text-navy-900 flex items-center justify-center text-xs font-mono font-bold shrink-0 z-10">02</div>
+                                <div>
+                                    <h5 class="text-sm font-bold text-navy-950">데이터 처리 구조 개선</h5>
+                                    <p class="text-xs text-slate-600 mt-1">분석 주기 중 반복 동작하는 클렌징 코드를 정리하고 불확실성을 최소화하는 방향 탐색.</p>
+                                </div>
+                            </div>
+
+                            <!-- Step 3 -->
+                            <div class="flex items-start space-x-4 relative">
+                                <div class="w-7 h-7 rounded-lg bg-mint-400 text-navy-900 flex items-center justify-center text-xs font-mono font-bold shrink-0 z-10 shadow-sm">03</div>
+                                <div>
+                                    <h5 class="text-sm font-bold text-navy-950">웹 프론트엔드로 영역 확장</h5>
+                                    <p class="text-xs text-slate-600 mt-1">HTML, CSS, JavaScript, SQL, Git 학습 및 데이터를 시각화하는 인터랙티브 웹 개발 몰입.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 p-3.5 bg-white border border-navy-200 rounded-2xl text-center shadow-sm">
+                        <span class="text-xs text-slate-600 font-medium">학습의 기록은 하단 <strong class="text-navy-900 font-bold underline decoration-yellowaccent-400">Growth Archive</strong>에서 열람하실 수 있습니다.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Section -->
+    <section id="project" class="py-24 bg-softwhite relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- Section Header -->
+            <div class="text-center mb-16 space-y-2">
+                <span class="font-mono text-xs text-navy-800 tracking-widest font-extrabold uppercase">02 / REPRESENTATIVE PROJECT</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-navy-950 tracking-tight">대표 프로젝트</h2>
+                <div class="w-12 h-1 bg-navy-900 mx-auto rounded-full mt-3"></div>
+            </div>
+
+            <!-- Single Feature High-quality Project Card -->
+            <div class="bg-white rounded-3xl border border-navy-200 overflow-hidden shadow-notebook-shadow hover:border-navy-900/20 transition-all duration-300">
+                <div class="grid grid-cols-1 lg:grid-cols-12">
+                    
+                    <!-- Left: Details & Process -->
+                    <div class="lg:col-span-7 p-8 sm:p-12 space-y-6 flex flex-col justify-between">
+                        <div>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="px-2.5 py-1 text-[11px] font-mono font-bold rounded-lg bg-navy-100 text-navy-900 border border-navy-200">R</span>
+                                <span class="px-2.5 py-1 text-[11px] font-mono font-bold rounded-lg bg-navy-100 text-navy-900 border border-navy-200">Data Analysis</span>
+                                <span class="px-2.5 py-1 text-[11px] font-mono font-bold rounded-lg bg-navy-100 text-navy-900 border border-navy-200">Local Projection</span>
+                                <span class="px-2.5 py-1 text-[11px] font-mono font-bold rounded-lg bg-navy-100 text-navy-900 border border-navy-200">IRF Visualization</span>
+                            </div>
+
+                            <h3 class="text-2xl sm:text-3xl font-extrabold text-navy-950 tracking-tight leading-tight">
+                                GPR · EPU 기반 KOSPI 영향 분석 프로젝트
+                            </h3>
+                            <p class="text-sm text-slate-600 mt-3 leading-relaxed">
+                                지정학적 위험 지수(GPR)와 경제 정책 불확실성 지수(EPU) 충격이 한국 금융 자산 시장(KOSPI)에 미치는 시차별 충격반응(IRF)의 동역학적 관계를 로컬 프로젝션 회귀 모형으로 진단해 낸 연구 프로젝트입니다.
+                            </p>
+
+                            <!-- Process detail list -->
+                            <div class="mt-8 space-y-4 border-l-2 border-navy-200 pl-4">
+                                <div class="space-y-1">
+                                    <h4 class="font-extrabold text-sm text-navy-900 flex items-center gap-2">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-navy-900"></span>
+                                        수행 과정
+                                    </h4>
+                                    <p class="text-xs text-slate-600 leading-relaxed">Fred, Bloomberg 통계 취합 후 R 패키지(`ggplot2`, `dplyr`)를 활용하여 지표 가공 및 전처리 수행. 통계 모델링 후 다중 회귀 분석 및 LP 분석 모듈 작동.</p>
+                                </div>
+                                <div class="space-y-1">
+                                    <h4 class="font-extrabold text-sm text-navy-900 flex items-center gap-2">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-navy-900"></span>
+                                        해결한 문제
+                                    </h4>
+                                    <p class="text-xs text-slate-600 leading-relaxed">변수 수집과 병합에 발생하는 시차 불일치 오류 및 공선성 왜곡 문제를 VIF 진단을 거쳐 해결했으며 분석 파이프라인 정형화로 탐색 효율을 올렸습니다.</p>
+                                </div>
+                                <div class="space-y-1">
+                                    <h4 class="font-extrabold text-sm text-navy-900 flex items-center gap-2">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-navy-900"></span>
+                                        수행 결과
+                                    </h4>
+                                    <p class="text-xs text-slate-600 leading-relaxed">충격반응함수(IRF)를 도출하여, 지정학적 충격(GPR)의 침체 영향력이 거시경제 불확실성(EPU)에 비해 단기적인 하방 압력이 훨씬 급격하고 깊게 나타남을 정량적으로 규명했습니다.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Badge Footer -->
+                        <div class="pt-6 border-t border-navy-100 flex justify-between items-center text-xs">
+                            <span class="text-slate-500 font-mono font-bold">ROLE: DATA ANALYST / DESIGNER</span>
+                            <span class="text-mint-600 font-bold flex items-center gap-1">
+                                <i class="fa-solid fa-circle-check"></i> 정량 데이터 보고서 완료
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Right: Interactive Chart Area (Light SVG-based) -->
+                    <div class="lg:col-span-5 bg-slate-50 p-8 flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-navy-200">
+                        <div>
+                            <span class="font-mono text-[9px] text-navy-800 font-extrabold tracking-widest block mb-3 uppercase"><i class="fa-solid fa-chart-line mr-1 text-navy-900"></i> Interactive Simulation</span>
+                            <p class="text-xs text-slate-600 mb-6">충격 요인이 되는 지수를 클릭하여 시간에 따른 KOSPI 가상 반응(하락폭 %) 그래프의 변동 추이를 시뮬레이션해보세요.</p>
+                            
+                            <!-- Toggle Button Switcher (Light Notebook Style) -->
+                            <div class="grid grid-cols-2 gap-2 mb-6 bg-white p-1 rounded-2xl border border-navy-200">
+                                <button id="shock-gpr-btn" class="py-2 px-3 rounded-xl bg-navy-900 text-white font-bold text-xs shadow transition-all">
+                                    지정학 리스크 (GPR)
+                                </button>
+                                <button id="shock-epu-btn" class="py-2 px-3 rounded-xl bg-transparent text-slate-500 hover:text-navy-900 font-bold text-xs transition-all">
+                                    경제 불확실성 (EPU)
+                                </button>
+                            </div>
+
+                            <!-- Beautiful Light SVG Container -->
+                            <div class="relative bg-white border border-navy-200 p-4 rounded-2xl shadow-sm">
+                                <svg id="irf-chart" viewBox="0 0 300 150" class="w-full h-auto">
+                                    <!-- Base zero level -->
+                                    <line x1="20" y1="50" x2="280" y2="50" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="3" />
+                                    <!-- Grid lines vertical -->
+                                    <line x1="60" y1="20" x2="60" y2="130" stroke="#F1F5F9" stroke-width="1" />
+                                    <line x1="100" y1="20" x2="100" y2="130" stroke="#F1F5F9" stroke-width="1" />
+                                    <line x1="140" y1="20" x2="140" y2="130" stroke="#F1F5F9" stroke-width="1" />
+                                    <line x1="180" y1="20" x2="180" y2="130" stroke="#F1F5F9" stroke-width="1" />
+                                    <line x1="220" y1="20" x2="220" y2="130" stroke="#F1F5F9" stroke-width="1" />
+                                    <line x1="260" y1="20" x2="260" y2="130" stroke="#F1F5F9" stroke-width="1" />
+                                    
+                                    <!-- Confidence Band Area -->
+                                    <path id="confidence-band" d="M 20 50 Q 60 120 100 110 T 180 60 T 260 50 L 260 50 L 180 50 T 100 80 Q 60 70 20 50 Z" fill="rgba(15, 23, 42, 0.05)" />
+                                    
+                                    <!-- Main Response Curve -->
+                                    <path id="response-line" d="M 20 50 Q 60 110 100 95 T 180 55 T 260 50" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round" class="transition-all duration-500" />
+                                    
+                                    <!-- Dynamic Impact Target Point -->
+                                    <circle id="impact-point" cx="60" cy="110" r="4.5" fill="#34D399" class="transition-all duration-500" />
+                                    
+                                    <!-- Chart Meta Labeling -->
+                                    <text x="20" y="15" fill="#64748B" font-family="JetBrains Mono" font-size="7">KOSPI VAR %</text>
+                                    <text x="255" y="145" fill="#64748B" font-family="JetBrains Mono" font-size="7">MONTH</text>
+                                    
+                                    <text x="20" y="145" fill="#94A3B8" font-family="JetBrains Mono" font-size="7">0</text>
+                                    <text x="60" y="145" fill="#94A3B8" font-family="JetBrains Mono" font-size="7">1</text>
+                                    <text x="100" y="145" fill="#94A3B8" font-family="JetBrains Mono" font-size="7">2</text>
+                                    <text x="140" y="145" fill="#94A3B8" font-family="JetBrains Mono" font-size="7">3</text>
+                                    <text x="180" y="145" fill="#94A3B8" font-family="JetBrains Mono" font-size="7">4</text>
+                                    <text x="220" y="145" fill="#94A3B8" font-family="JetBrains Mono" font-size="7">5</text>
+                                    <text x="260" y="145" fill="#94A3B8" font-family="JetBrains Mono" font-size="7">6</text>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Brief interactive card commentary -->
+                        <div class="mt-6 p-4 bg-white border border-navy-200 rounded-2xl shadow-sm">
+                            <h5 class="text-xs font-bold text-navy-950 flex items-center gap-2">
+                                <i class="fa-solid fa-circle-info text-navy-900"></i>
+                                <span id="chart-desc-title">GPR 충격반응 분석 특이사항</span>
+                            </h5>
+                            <p id="chart-desc-body" class="text-xs text-slate-600 mt-1.5 leading-relaxed">
+                                지정학적 리스크가 도래할 시, 한국 자산 시장은 초기 약 1~2개월 이내에 가장 격렬한 변동 하강 반응을 가지며 신흥국 자금 이탈 영향에 가속화됩니다.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skill Section -->
+    <section id="skills" class="py-24 bg-white border-y border-navy-200/60">
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- Section Header -->
+            <div class="text-center mb-16 space-y-2">
+                <span class="font-mono text-xs text-navy-800 tracking-widest font-extrabold uppercase">03 / TECH STACK</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-navy-950 tracking-tight">보유 기술 스택</h2>
+                <div class="w-12 h-1 bg-navy-900 mx-auto rounded-full mt-3"></div>
+            </div>
+
+            <!-- Skills Grid with light notebook style card layout -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- HTML Card -->
+                <div class="group bg-softwhite p-6 rounded-2xl border border-navy-200 hover:border-navy-900 hover:shadow-card-subtle transition-all duration-300">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-11 h-11 bg-orange-100 rounded-xl flex items-center justify-center text-orange-600 text-xl group-hover:scale-105 transition-all">
+                            <i class="fa-brands fa-html5"></i>
+                        </div>
+                        <span class="text-[9px] font-mono text-slate-500 font-bold">SKILL.MAX</span>
+                    </div>
+                    <h3 class="text-base font-bold text-navy-950 group-hover:text-navy-900 transition-colors">HTML5</h3>
+                    <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                        웹 표준 구조와 접근성을 준수하는 유연하고 깔끔한 시맨틱 마크업을 정립합니다.
+                    </p>
+                </div>
+
+                <!-- CSS Card -->
+                <div class="group bg-softwhite p-6 rounded-2xl border border-navy-200 hover:border-navy-900 hover:shadow-card-subtle transition-all duration-300">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-11 h-11 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 text-xl group-hover:scale-105 transition-all">
+                            <i class="fa-brands fa-css3-alt"></i>
+                        </div>
+                        <span class="text-[9px] font-mono text-slate-500 font-bold">SKILL.HIGH</span>
+                    </div>
+                    <h3 class="text-base font-bold text-navy-950 group-hover:text-navy-900 transition-colors">CSS3 & Tailwind</h3>
+                    <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                        유틸리티 퍼스트 프레임워크인 Tailwind를 바탕으로 고해상도 반응형 그리드 레이아웃을 빠르게 구상합니다.
+                    </p>
+                </div>
+
+                <!-- JavaScript Card -->
+                <div class="group bg-softwhite p-6 rounded-2xl border border-navy-200 hover:border-navy-900 hover:shadow-card-subtle transition-all duration-300">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-11 h-11 bg-yellowaccent-100 rounded-xl flex items-center justify-center text-yellowaccent-500 text-xl group-hover:scale-105 transition-all">
+                            <i class="fa-brands fa-js"></i>
+                        </div>
+                        <span class="text-[9px] font-mono text-navy-900 font-bold">SKILL.GROWING</span>
+                    </div>
+                    <h3 class="text-base font-bold text-navy-950 group-hover:text-navy-900 transition-colors">JavaScript (ES6+)</h3>
+                    <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                        비동기 원리(Promise, Async/Await), 핵심 자료 구조, 동적 DOM 변경 및 인터랙티브 동작 흐름을 구축합니다.
+                    </p>
+                </div>
+
+                <!-- SQL Card -->
+                <div class="group bg-softwhite p-6 rounded-2xl border border-navy-200 hover:border-navy-900 hover:shadow-card-subtle transition-all duration-300">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-11 h-11 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 text-xl group-hover:scale-105 transition-all">
+                            <i class="fa-solid fa-database"></i>
+                        </div>
+                        <span class="text-[9px] font-mono text-slate-500 font-bold">SKILL.MID</span>
+                    </div>
+                    <h3 class="text-base font-bold text-navy-950 group-hover:text-navy-900 transition-colors">SQL (RDBMS)</h3>
+                    <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+                        복잡한 테이블 조인 조건 구조와 다중 서브쿼리를 분석하고 최적화 성능을 고려한 조회를 처리합니다.
+                    </p>
+                </div>
+
+                <!-- R Card -->
+                <div class="group bg-softwhite p-6 rounded-2xl border border-navy-200 hover:border-navy-900 hover:shadow-card-subtle transition-all duration-300">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-11 h-11 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600 text-xl group-hover:scale-105 transition-all">
+                            <i class="fa-solid fa-square-poll-vertical"></i>
+                        </div>
+                        <span class="text-[9px] font-mono text-slate-500 font-bold">SKILL.PRO</span>
+                    </div>
+                    <h3 class="text-base font-bold text-navy-950 group-hover:text-navy-900 transition-colors">R Statistics</h3>
+                    <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                        대규모 횡단면 데이터 수집 가공, 시계열 및 예측 모형 설계, 시각화 시각 도구 활용에 매우 숙련되어 있습니다.
+                    </p>
+                </div>
+
+                <!-- Git Card -->
+                <div class="group bg-softwhite p-6 rounded-2xl border border-navy-200 hover:border-navy-900 hover:shadow-card-subtle transition-all duration-300">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-11 h-11 bg-red-100 rounded-xl flex items-center justify-center text-red-600 text-xl group-hover:scale-105 transition-all">
+                            <i class="fa-brands fa-git-alt"></i>
+                        </div>
+                        <span class="text-[9px] font-mono text-slate-500 font-bold">SKILL.COMPLETED</span>
+                    </div>
+                    <h3 class="text-base font-bold text-navy-950 group-hover:text-navy-900 transition-colors">Git / GitHub</h3>
+                    <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                        정밀한 브랜치 활용, 이력 충돌 대처(Resolve), 원활한 공동 개발 환경을 구축할 수 있습니다.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Growth Archive Section ⭐ (Mint Green & Yellow Accent Playground) -->
+    <section id="growth" class="py-24 bg-softwhite relative overflow-hidden">
+        <!-- Notebook Light Accents -->
+        <div class="absolute -right-24 top-24 w-72 h-72 rounded-full bg-mint-400/20 blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-24 bottom-24 w-72 h-72 rounded-full bg-yellowaccent-300/30 blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- Section Header -->
+            <div class="text-center mb-16 space-y-2">
+                <span class="font-mono text-xs text-navy-900 tracking-widest font-extrabold uppercase">04 / DEV GROWTH JOURNAL</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-navy-950 tracking-tight">Growth Archive</h2>
+                <div class="w-12 h-1 bg-navy-900 mx-auto rounded-full mt-3"></div>
+            </div>
+
+            <!-- Gamified Notebook Panel Area -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch mb-12">
+                
+                <!-- RPG Core State Controller Card (Left) - styled like a playful RPG ledger -->
+                <div class="lg:col-span-5 bg-white border-2 border-navy-900 rounded-3xl p-6 flex flex-col justify-between relative shadow-notebook-shadow hover:shadow-lg transition-all duration-300">
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <span class="font-mono text-[10px] text-navy-900 font-extrabold tracking-wider"><i class="fa-solid fa-gamepad mr-1.5 text-mint-500"></i>CHARACTER STATUS</span>
+                            <!-- Clickable Level-Up study interaction button with Yellow Accent Glow -->
+                            <button id="study-btn" class="px-3 py-1.5 bg-yellowaccent-400 text-navy-950 font-mono text-[11px] font-extrabold rounded-xl hover:bg-yellowaccent-300 active:scale-95 transition-all shadow-sm border border-navy-900">
+                                [ STUDY TODAY! ]
+                            </button>
+                        </div>
+
+                        <!-- Big Dynamic Level representation (Yellow/Mint) -->
+                        <div class="text-center py-6">
+                            <h3 id="current-lvl-title" class="font-mono text-2xl font-extrabold text-navy-900 tracking-wide transition-all duration-300">Developer Level 03</h3>
+                            <p class="text-xs text-slate-500 font-mono mt-1 font-bold">Daily Logged Status: Auto-Syncing</p>
+                        </div>
+
+                        <!-- Growth Experience Bar (Controlled by Vanilla JS with playful design) -->
+                        <div class="space-y-2.5 mt-2">
+                            <div class="flex justify-between text-xs font-mono font-bold">
+                                <span class="text-slate-500">EXP GAUGE</span>
+                                <span id="exp-percentage" class="text-mint-600 font-extrabold">70%</span>
+                            </div>
+                            <!-- Bar container -->
+                            <div class="w-full bg-slate-100 border border-navy-900 rounded-2xl h-7 p-1 flex items-center overflow-hidden">
+                                <div id="exp-bar-fill" class="bg-gradient-to-r from-mint-400 to-yellowaccent-400 h-full rounded-xl transition-all duration-500 ease-out" style="width: 70%"></div>
+                            </div>
+                            <p class="text-[10px] text-slate-500 font-mono font-bold text-right">Click 'STUDY TODAY' for +10 EXP. Level Up at 100 EXP!</p>
+                        </div>
+                    </div>
+
+                    <!-- Acquired Achievements List (Elegantly Game-styled but highly Professional) -->
+                    <div class="mt-8 border-t-2 border-dashed border-navy-200 pt-6">
+                        <h4 class="text-xs font-mono text-navy-800 font-extrabold tracking-wider mb-4 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-yellowaccent-500"></span>
+                            🏆 ACQUIRED ACHIEVEMENTS
+                        </h4>
+                        <div class="space-y-3.5">
+                            <div class="flex items-center space-x-3 text-xs font-bold text-navy-900">
+                                <span class="w-6 h-6 rounded-lg bg-mint-100 text-mint-600 flex items-center justify-center shrink-0 border border-mint-200"><i class="fa-solid fa-award"></i></span>
+                                <span>첫 데이터 분석 프로젝트 완료</span>
+                            </div>
+                            <div class="flex items-center space-x-3 text-xs font-bold text-navy-900">
+                                <span class="w-6 h-6 rounded-lg bg-mint-100 text-mint-600 flex items-center justify-center shrink-0 border border-mint-200"><i class="fa-solid fa-code-commit"></i></span>
+                                <span>Git 및 형상 관리 학습 완수</span>
+                            </div>
+                            <div class="flex items-center space-x-3 text-xs font-bold text-navy-900">
+                                <span class="w-6 h-6 rounded-lg bg-yellowaccent-100 text-yellowaccent-500 flex items-center justify-center shrink-0 border border-yellowaccent-300"><i class="fa-solid fa-bolt-lightning text-[10px]"></i></span>
+                                <span>JavaScript 비동기 정복 퀘스트 진행 중</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Learning Quest Board (Right Column) -->
+                <div class="lg:col-span-7 flex flex-col justify-between space-y-4">
+                    <div class="mb-2">
+                        <span class="font-mono text-[10px] text-navy-900 font-extrabold tracking-widest uppercase"><i class="fa-solid fa-bookmark mr-1.5 text-mint-500"></i>COMPLETED QUESTS LOGS</span>
+                        <p class="text-xs text-slate-600 mt-1 font-semibold">카드를 선택해 기술 성장 과정과 마주한 오류의 상세 해결 기록을 탐색하세요.</p>
+                    </div>
+
+                    <!-- Cards Layout Grid (Clean White Playful Cards with colored Accent Bars) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        
+                        <!-- Quest 1 (Git) -->
+                        <div class="quest-card cursor-pointer bg-white hover:bg-slate-50 border-2 border-navy-200 hover:border-navy-900 p-5 rounded-2xl transition-all relative group shadow-card-subtle"
+                             data-quest="git">
+                            <div class="absolute top-5 right-5 text-slate-400 group-hover:text-navy-900 transition-colors">
+                                <i class="fa-solid fa-chevron-right text-xs"></i>
+                            </div>
+                            <div class="flex items-center space-x-2 text-xs text-mint-600 mb-2 font-mono font-bold">
+                                <i class="fa-solid fa-code-fork"></i>
+                                <span>Git & Workflow</span>
+                            </div>
+                            <h4 class="font-extrabold text-sm text-navy-950 group-hover:text-navy-900 transition-colors">Git의 구조적 핵심 지식 이해</h4>
+                            <p class="text-xs text-slate-600 mt-2 line-clamp-2 leading-relaxed">Working Directory, Staging Area, Local Repository 구조...</p>
+                            <span class="inline-block mt-4 text-[9px] font-mono font-bold text-navy-900 bg-mint-100 px-2.5 py-1 rounded-lg border border-mint-200">REWARD: STABILITY +10</span>
+                        </div>
+
+                        <!-- Quest 2 (VIF) -->
+                        <div class="quest-card cursor-pointer bg-white hover:bg-slate-50 border-2 border-navy-200 hover:border-navy-900 p-5 rounded-2xl transition-all relative group shadow-card-subtle"
+                             data-quest="multicoll">
+                            <div class="absolute top-5 right-5 text-slate-400 group-hover:text-navy-900 transition-colors">
+                                <i class="fa-solid fa-chevron-right text-xs"></i>
+                            </div>
+                            <div class="flex items-center space-x-2 text-xs text-yellowaccent-500 mb-2 font-mono font-bold">
+                                <i class="fa-solid fa-calculator"></i>
+                                <span>R & Regression</span>
+                            </div>
+                            <h4 class="font-extrabold text-sm text-navy-950 group-hover:text-navy-900 transition-colors">다중공선성(VIF) 진단</h4>
+                            <p class="text-xs text-slate-600 mt-2 line-clamp-2 leading-relaxed">회귀 분석 모형의 다중공선성 문제를 VIF 지수로 확인 및 제어...</p>
+                            <span class="inline-block mt-4 text-[9px] font-mono font-bold text-navy-900 bg-yellowaccent-100 px-2.5 py-1 rounded-lg border border-yellowaccent-300">REWARD: LOGIC +15</span>
+                        </div>
+
+                        <!-- Quest 3 (Async JS) -->
+                        <div class="quest-card cursor-pointer bg-white hover:bg-slate-50 border-2 border-navy-200 hover:border-navy-900 p-5 rounded-2xl transition-all relative group shadow-card-subtle"
+                             data-quest="js-async">
+                            <div class="absolute top-5 right-5 text-slate-400 group-hover:text-navy-900 transition-colors">
+                                <i class="fa-solid fa-chevron-right text-xs"></i>
+                            </div>
+                            <div class="flex items-center space-x-2 text-xs text-mint-600 mb-2 font-mono font-bold">
+                                <i class="fa-brands fa-square-js text-base"></i>
+                                <span>JavaScript Async</span>
+                            </div>
+                            <h4 class="font-extrabold text-sm text-navy-950 group-hover:text-navy-900 transition-colors">JS 이벤트 루프와 비동기</h4>
+                            <p class="text-xs text-slate-600 mt-2 line-clamp-2 leading-relaxed">이벤트 루프 기반의 비동기 제어, Promise와 Async/Await 처리...</p>
+                            <span class="inline-block mt-4 text-[9px] font-mono font-bold text-navy-900 bg-mint-100 px-2.5 py-1 rounded-lg border border-mint-200">REWARD: FRONTEND +12</span>
+                        </div>
+
+                        <!-- Quest 4 (SQL Query Tuning) -->
+                        <div class="quest-card cursor-pointer bg-white hover:bg-slate-50 border-2 border-navy-200 hover:border-navy-900 p-5 rounded-2xl transition-all relative group shadow-card-subtle"
+                             data-quest="sql-join">
+                            <div class="absolute top-5 right-5 text-slate-400 group-hover:text-navy-900 transition-colors">
+                                <i class="fa-solid fa-chevron-right text-xs"></i>
+                            </div>
+                            <div class="flex items-center space-x-2 text-xs text-yellowaccent-500 mb-2 font-mono font-bold">
+                                <i class="fa-solid fa-database"></i>
+                                <span>SQL Optimization</span>
+                            </div>
+                            <h4 class="font-extrabold text-sm text-navy-950 group-hover:text-navy-900 transition-colors">대용량 JOIN 쿼리 최적화</h4>
+                            <p class="text-xs text-slate-600 mt-2 line-clamp-2 leading-relaxed">전처리 과정의 복잡한 중첩 서브쿼리를 JOIN문으로 치환 및 개선...</p>
+                            <span class="inline-block mt-4 text-[9px] font-mono font-bold text-navy-900 bg-yellowaccent-100 px-2.5 py-1 rounded-lg border border-yellowaccent-300">REWARD: EFFICIENCY +18</span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detailed Interactive Modal Popup for Growth Card -->
+    <div id="quest-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-900/60 backdrop-blur-md hidden transition-all">
+        <div class="w-full max-w-lg bg-white border-2 border-navy-900 rounded-3xl overflow-hidden shadow-notebook-shadow relative">
+            <!-- Modal Accent Line (Navy & Yellow Combo) -->
+            <div class="h-[6px] bg-gradient-to-r from-navy-900 via-yellowaccent-400 to-mint-400"></div>
+
+            <div class="p-6 sm:p-8 space-y-6">
+                <!-- Modal Title -->
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span id="modal-category" class="font-mono text-[10px] text-navy-800 font-extrabold tracking-wider uppercase">DEV QUEST ARCHIVE</span>
+                        <h3 id="modal-title" class="text-lg font-extrabold mt-1 text-navy-950 tracking-tight">상세 로깅 데이터</h3>
+                    </div>
+                    <button id="modal-close" class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:text-navy-950 hover:bg-slate-200 transition-colors">
+                        <i class="fa-solid fa-xmark text-base"></i>
+                    </button>
+                </div>
+
+                <!-- Scrollable Detailed content for better mobile views -->
+                <div class="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
+                    <div>
+                        <h4 class="text-xs font-extrabold text-navy-900 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                            <i class="fa-solid fa-bookmark text-mint-500 text-[10px]"></i>
+                            <span>오늘 배운 핵심 원리</span>
+                        </h4>
+                        <p id="modal-learned" class="text-xs sm:text-sm text-slate-700 leading-relaxed bg-slate-50 p-3.5 rounded-2xl border border-navy-200">
+                            상세 학습 지식 내용
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-extrabold text-navy-900 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                            <i class="fa-solid fa-screwdriver-wrench text-yellowaccent-500 text-[10px]"></i>
+                            <span>마주친 장애 요소와 해결책</span>
+                        </h4>
+                        <p id="modal-problem" class="text-xs sm:text-sm text-slate-700 leading-relaxed bg-slate-50 p-3.5 rounded-2xl border border-navy-200">
+                            상세 문제 해결 정보
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Modal bottom indicator/Reward -->
+                <div class="flex items-center justify-between p-3.5 bg-yellowaccent-100/40 border border-yellowaccent-300 rounded-2xl">
+                    <span class="text-xs font-bold text-slate-600">획득 효과</span>
+                    <span id="modal-reward" class="font-mono text-[10px] font-extrabold text-navy-900">STAT BONUS ACQUIRED</span>
+                </div>
+            </div>
+
+            <!-- Modal Action Footer -->
+            <div class="px-6 py-4 bg-slate-50 border-t border-navy-100 flex justify-end">
+                <button id="modal-bottom-close-btn" class="px-4 py-2 rounded-xl bg-navy-900 hover:bg-navy-800 text-white text-xs font-bold transition-all">
+                    완료 확인
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-24 bg-white border-t border-navy-200/60 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- Section Header -->
+            <div class="text-center mb-16 space-y-2">
+                <span class="font-mono text-xs text-navy-900 tracking-widest font-extrabold uppercase">05 / CONNECT WITH ME</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-navy-950 tracking-tight">CONTACT</h2>
+                <div class="w-12 h-1 bg-navy-900 mx-auto rounded-full mt-3"></div>
+            </div>
+
+            <!-- Glassmorphism interactive contact dashboard -->
+            <div class="max-w-3xl mx-auto bg-softwhite p-8 sm:p-12 rounded-3xl border border-navy-200 shadow-notebook-shadow relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-tr from-yellowaccent-300/5 to-transparent pointer-events-none"></div>
+                
+                <h3 class="text-xl sm:text-2xl font-extrabold text-center mb-8 text-navy-950 leading-snug">
+                    데이터 지식과 코드를 응집하여 <br class="sm:hidden">
+                    정교한 가치를 일굴 주니어를 찾으시나요?
+                </h3>
+                
+                <!-- Communication Buttons Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <!-- GitHub -->
+                    <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="group p-5 rounded-2xl bg-white border border-navy-200 hover:border-navy-900 hover:-translate-y-1 transition-all text-center">
+                        <div class="w-11 h-11 bg-navy-900 text-white rounded-xl flex items-center justify-center text-xl mx-auto mb-3 group-hover:scale-105 transition-all">
+                            <i class="fa-brands fa-github"></i>
+                        </div>
+                        <h4 class="font-extrabold text-sm text-navy-950">GitHub</h4>
+                        <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">전체 프로젝트 코드저장소</p>
+                    </a>
+
+                    <!-- Blog -->
+                    <a href="https://velog.io" target="_blank" rel="noopener noreferrer" class="group p-5 rounded-2xl bg-white border border-navy-200 hover:border-navy-900 hover:-translate-y-1 transition-all text-center">
+                        <div class="w-11 h-11 bg-mint-100 text-mint-600 rounded-xl flex items-center justify-center text-xl mx-auto mb-3 group-hover:scale-105 transition-all">
+                            <i class="fa-solid fa-feather"></i>
+                        </div>
+                        <h4 class="font-extrabold text-sm text-navy-950">Blog</h4>
+                        <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">성장과 오류 해결 지식 블로그</p>
+                    </a>
+
+                    <!-- Copyable Email -->
+                    <button id="email-btn" class="group p-5 rounded-2xl bg-white border border-navy-200 hover:border-navy-900 hover:-translate-y-1 transition-all text-center w-full focus:outline-none">
+                        <div class="w-11 h-11 bg-yellowaccent-100 text-yellowaccent-500 rounded-xl flex items-center justify-center text-xl mx-auto mb-3 group-hover:scale-105 transition-all">
+                            <i class="fa-regular fa-envelope"></i>
+                        </div>
+                        <h4 class="font-extrabold text-sm text-navy-950">Email Copy</h4>
+                        <p id="email-text" class="text-[11px] text-slate-500 mt-1 leading-relaxed truncate font-bold">growdev@example.com</p>
+                    </button>
+                </div>
+
+                <!-- Smooth Feedback Toast Message -->
+                <div id="copy-toast" class="hidden mt-8 p-3 bg-yellowaccent-400 text-navy-950 font-extrabold text-xs text-center rounded-2xl transition-all shadow-md">
+                    이메일 주소가 클립보드에 성공적으로 복사되었습니다!
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-softwhite border-t border-navy-200/60 py-12 text-slate-500 text-xs">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="space-y-1.5 text-center md:text-left">
+                <span class="font-mono text-xs font-bold tracking-wider text-navy-900 block">GROWING DEVELOPER JOURNAL</span>
+                <p class="text-slate-600 font-medium">가장 타당한 데이터 인사이트를 기반으로 논리 정연한 웹 경험을 수립합니다.</p>
+            </div>
+            
+            <div class="text-center md:text-right space-y-1 font-medium">
+                <p>&copy; 2026 Kim SeongJang. All rights reserved.</p>
+                <p class="text-slate-400 font-mono text-[10px]">Powered by Pure HTML, CSS (Tailwind) & Vanilla ES6 JS</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive JS Script Logic -->
+    <script>
+        // --- 1. Responsive Navbar Mobile Toggle ---
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // --- 2. Interactive SVG IRF Chart Toggle Logic ---
+        const shockGprBtn = document.getElementById('shock-gpr-btn');
+        const shockEpuBtn = document.getElementById('shock-epu-btn');
+        const responseLine = document.getElementById('response-line');
+        const confidenceBand = document.getElementById('confidence-band');
+        const impactPoint = document.getElementById('impact-point');
+        const chartDescTitle = document.getElementById('chart-desc-title');
+        const chartDescBody = document.getElementById('chart-desc-body');
+
+        shockGprBtn.addEventListener('click', () => {
+            // Style active buttons
+            shockGprBtn.className = "py-2 px-3 rounded-xl bg-navy-900 text-white font-bold text-xs shadow transition-all";
+            shockEpuBtn.className = "py-2 px-3 rounded-xl bg-transparent text-slate-500 hover:text-navy-900 font-bold text-xs transition-all";
+            
+            // Adjust SVG Paths dynamically for GPR Shock curve
+            responseLine.setAttribute('d', 'M 20 50 Q 60 110 100 95 T 180 55 T 260 50');
+            confidenceBand.setAttribute('d', 'M 20 50 Q 60 120 100 110 T 180 60 T 260 50 L 260 50 L 180 50 T 100 80 Q 60 70 20 50 Z');
+            impactPoint.setAttribute('cx', '60');
+            impactPoint.setAttribute('cy', '110');
+
+            chartDescTitle.textContent = "GPR 충격반응 분석 특이사항";
+            chartDescBody.textContent = "지정학적 리스크가 도래할 시, 한국 자산 시장은 초기 약 1~2개월 이내에 가장 격렬한 변동 하강 반응을 가지며 신흥국 자금 이탈 영향에 가속화됩니다.";
+        });
+
+        shockEpuBtn.addEventListener('click', () => {
+            // Style active buttons
+            shockEpuBtn.className = "py-2 px-3 rounded-xl bg-navy-900 text-white font-bold text-xs shadow transition-all";
+            shockGprBtn.className = "py-2 px-3 rounded-xl bg-transparent text-slate-500 hover:text-navy-900 font-bold text-xs transition-all";
+            
+            // Adjust SVG Paths dynamically for EPU Shock curve
+            responseLine.setAttribute('d', 'M 20 50 Q 60 82 100 74 T 180 50 T 260 50');
+            confidenceBand.setAttribute('d', 'M 20 50 Q 60 92 100 84 T 180 55 T 260 50 L 260 50 L 180 45 T 100 65 Q 60 75 20 50 Z');
+            impactPoint.setAttribute('cx', '60');
+            impactPoint.setAttribute('cy', '82');
+
+            chartDescTitle.textContent = "EPU 충격반응 분석 특이사항";
+            chartDescBody.textContent = "경제정책 불확실성은 전파 주기가 완만하여 급격한 순간 이탈률은 GPR 대비 온건한 편이나, 의사결정 수립 및 정책 수습 흐름에 따라 변동 회복 시기가 완만히 미루어지는 구조입니다.";
+        });
+
+        // --- 3. Gamified RPG Leveling Logic ---
+        let currentExp = 70;
+        let currentLvl = 3;
+        const expBarFill = document.getElementById('exp-bar-fill');
+        const expPercentageText = document.getElementById('exp-percentage');
+        const currentLvlTitle = document.getElementById('current-lvl-title');
+        const studyBtn = document.getElementById('study-btn');
+
+        studyBtn.addEventListener('click', () => {
+            currentExp += 10;
+            if (currentExp >= 100) {
+                currentExp = currentExp - 100;
+                currentLvl += 1;
+                
+                // Trigger dynamic bounce transition
+                currentLvlTitle.textContent = `Developer Level 0${currentLvl}`;
+                currentLvlTitle.classList.remove('text-navy-900');
+                currentLvlTitle.classList.add('text-yellowaccent-500', 'scale-105');
+                setTimeout(() => {
+                    currentLvlTitle.classList.remove('text-yellowaccent-500', 'scale-105');
+                    currentLvlTitle.classList.add('text-navy-900');
+                }, 800);
+            }
+            expBarFill.style.width = `${currentExp}%`;
+            expPercentageText.textContent = `${currentExp}%`;
+        });
+
+        // --- 4. Interactive Growth Log Archive Quest Modal Setup ---
+        const questData = {
+            git: {
+                category: "GIT CORE WORKFLOW",
+                title: "Git의 구조적 핵심 원리와 브랜치 병합 프로세스",
+                learned: "코드 가공 과정의 로컬 추적 단계인 Working Directory, 파일 패키징 Staging Area, 영구 체크포인트 수립 Local Repository의 형상 흐름을 깊이 숙달했습니다. 브랜치 충돌을 정량적으로 예방하는 브랜치 전략을 체화했습니다.",
+                problem: "분산 개발 병합 테스트 시 서로 다른 히스토리 병합 충돌(Merge Conflict) 현상에 직면했습니다. 이력을 수작업으로 지우는 실수를 지양하고, 변경 지점 비교 도구로 원인을 진단한 후 3-way Merge 전략에 기초하여 안전하게 충돌을 해소했습니다.",
+                reward: "STABILITY LOGIC STATUS +10"
+            },
+            multicoll: {
+                category: "R DATA MODELING QUEST",
+                title: "경제 변수 간 다중공선성(Multicollinearity) 진단 극복",
+                learned: "설명변수 집합의 상호 강한 연관성으로 인해 예측 계수의 분산 표준오차가 급증하는 현상과 통계 왜곡 원인을 극복했습니다. 독립적인 기저 변수로 전처리 모듈을 보완하는 구조를 다졌습니다.",
+                problem: "거시지표 병합 회귀 단계에서 일부 시계열 지표의 상관관계가 과도하여 VIF 검정 지수가 10을 초과하는 왜곡 현상이 나타났습니다. 주요 영향인자 합성 변수를 새로 설계하고 가중 편차를 대용 지표로 마이그레이션하여 오차 신뢰도를 95% 수준으로 보정해냈습니다.",
+                reward: "STATISTICAL ANALYSIS +15"
+            },
+            "js-async": {
+                category: "CORE JAVASCRIPT QUEST",
+                title: "JS 단일 스레드 비동기 런타임 제어 및 이벤트 루프",
+                learned: "웹 브라우저의 비동기 호출을 처리하는 태스크 큐(Task Queue), 이벤트 루프(Event Loop), 백그라운드 스레드 협업 흐름을 이해했습니다. 깊은 중첩의 Callback 구조를 해소하는 선언적 Promise와 Async/Await 문법을 숙달했습니다.",
+                problem: "동기 가공 순서에 혼선이 일어나 여러 REST 호출 응답이 무작위로 복사되어 뷰(View)가 깨지는 현상이 있었습니다. 실행 병목 원인을 수렴하기 위해 동기 병렬 제어(Promise.all)와 Try-Catch 구문을 도입하여 렌더링 신뢰성을 확보했습니다.",
+                reward: "INTERACTIVE UI ENGAGEMENT +12"
+            },
+            "sql-join": {
+                category: "RDBMS QUERY OPTIMIZATION",
+                title: "대용량 관계형 DB 인덱스 스캔 및 조인(JOIN) 튜닝",
+                learned: "무한 루프 스캔 문제를 야기하는 SQL 다중 서브쿼리 구조를 직관적인 JOIN 구조로 마이그레이션하고, 검색 기준 열에 명시적 인덱스를 가하여 데이터 탐색 시간 복잡도를 혁신적으로 최적화했습니다.",
+                problem: "대용량 연구 로그 테이블을 로드할 시 가공 조건에 IN 지연 루프가 중첩되어 쿼리 전체 스캔(Full Scan)이 발생, 화면 지연이 최고 4초 이상 걸렸습니다. 이를 최적 Inner Join 및 EXISTS 튜닝으로 전면 변환하여 조회 대기 레이턴시를 0.1초 미만으로 단축시켰습니다.",
+                reward: "RETRIEVAL SPEED OPTIMIZATION +18"
+            }
+        };
+
+        const questCards = document.querySelectorAll('.quest-card');
+        const questModal = document.getElementById('quest-modal');
+        const modalCategory = document.getElementById('modal-category');
+        const modalTitle = document.getElementById('modal-title');
+        const modalLearned = document.getElementById('modal-learned');
+        const modalProblem = document.getElementById('modal-problem');
+        const modalReward = document.getElementById('modal-reward');
+        const modalCloseBtn = document.getElementById('modal-close');
+        const modalBottomCloseBtn = document.getElementById('modal-bottom-close-btn');
+
+        // Open Modal logic
+        questCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const questKey = card.getAttribute('data-quest');
+                const data = questData[questKey];
+                
+                if (data) {
+                    modalCategory.textContent = data.category;
+                    modalTitle.textContent = data.title;
+                    modalLearned.textContent = data.learned;
+                    modalProblem.textContent = data.problem;
+                    modalReward.textContent = data.reward;
+                    
+                    questModal.classList.remove('hidden');
+                }
+            });
+        });
+
+        // Close Modal functions
+        const closeModal = () => {
+            questModal.classList.add('hidden');
+        };
+
+        modalCloseBtn.addEventListener('click', closeModal);
+        modalBottomCloseBtn.addEventListener('click', closeModal);
+        questModal.addEventListener('click', (e) => {
+            if (e.target === questModal) {
+                closeModal();
+            }
+        });
+
+        // --- 5. Clipboard Copy Action for Contact Info ---
+        const emailBtn = document.getElementById('email-btn');
+        const emailText = document.getElementById('email-text');
+        const copyToast = document.getElementById('copy-toast');
+
+        emailBtn.addEventListener('click', () => {
+            const rawEmail = emailText.textContent;
+            
+            // Create fallback input element
+            const tempInput = document.createElement('input');
+            tempInput.value = rawEmail;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            // Trigger feedback toast animation
+            copyToast.classList.remove('hidden');
+            setTimeout(() => {
+                copyToast.classList.add('hidden');
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
