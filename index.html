@@ -1,0 +1,2032 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고민주의 개발 성장 일기장 (GDJ) v2.5</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            bg: '#FAF9F6', // Cozy Warm Cotton/Soft White
+                            mint: '#34D399',
+                            mintDark: '#059669',
+                            pink: '#F472B6',
+                            pinkDark: '#DB2777',
+                            pinkLight: '#FCE7F3',
+                            dark: '#1C1917', // Cozy Dark Charcoal
+                            slate: '#57534E', // Warm gray
+                            accent: '#F59E0B', 
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans KR', 'sans-serif'],
+                        game: ['"Press Start 2P"', 'monospace'],
+                        cute: ['"Gaegu"', 'cursive', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom Keyframe Animations for Retro Playful Feelings */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        @keyframes bounce-slow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes squish {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.22, 0.75); }
+            50% { transform: scale(0.88, 1.15); }
+            70% { transform: scale(1.05, 0.95); }
+            100% { transform: scale(1); }
+        }
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+        .animate-bounce-slow {
+            animation: bounce-slow 2.5s ease-in-out infinite;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .animate-squish {
+            animation: squish 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+        }
+        
+        /* Notebook Ring Styling */
+        .notebook-line {
+            background-image: linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px);
+            background-size: 100% 2.2rem;
+        }
+        .dark .notebook-line {
+            background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FAF9F6;
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: #1C1917;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #F472B6 0%, #34D399 100%);
+            border-radius: 5px;
+            border: 2px solid #FAF9F6;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            border: 2px solid #1C1917;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #DB2777 0%, #059669 100%);
+        }
+
+        /* Interactive Card Lift Tilt effect */
+        .interactive-card {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .interactive-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(244, 114, 182, 0.15);
+        }
+        .dark .interactive-card:hover {
+            box-shadow: 0 15px 30px rgba(52, 211, 153, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-brand-bg text-brand-dark dark:bg-stone-950 dark:text-stone-100 font-sans selection:bg-brand-pinkLight selection:text-brand-pinkDark transition-colors duration-300 overflow-x-hidden">
+
+    <!-- Sound & Interactive Synthesizer Script -->
+    <script>
+        // Retro Web Audio Synthesizer
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+        let soundEnabled = true;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new AudioCtx();
+            }
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                if (!audioCtx) return;
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.08);
+                    gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.08);
+                } else if (type === 'levelUp') {
+                    const now = audioCtx.currentTime;
+                    osc.type = 'triangle';
+                    const scale = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+                    scale.forEach((freq, index) => {
+                        osc.frequency.setValueAtTime(freq, now + index * 0.07);
+                    });
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+                    osc.start();
+                    osc.stop(now + 0.45);
+                } else if (type === 'pageOpen') {
+                    const now = audioCtx.currentTime;
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(350, now);
+                    osc.frequency.linearRampToValueAtTime(700, now + 0.18);
+                    gain.gain.setValueAtTime(0.05, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+                    osc.start();
+                    osc.stop(now + 0.2);
+                } else if (type === 'quizCorrect') {
+                    const now = audioCtx.currentTime;
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(600, now);
+                    osc.frequency.setValueAtTime(900, now + 0.1);
+                    gain.gain.setValueAtTime(0.06, now);
+                    gain.gain.exponentialRampToValueAtTime(0.005, now + 0.3);
+                    osc.start();
+                    osc.stop(now + 0.3);
+                } else if (type === 'quizWrong') {
+                    const now = audioCtx.currentTime;
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(150, now);
+                    osc.frequency.setValueAtTime(100, now + 0.15);
+                    gain.gain.setValueAtTime(0.05, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                    osc.start();
+                    osc.stop(now + 0.3);
+                } else if (type === 'squish') {
+                    const now = audioCtx.currentTime;
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.exponentialRampToValueAtTime(440, now + 0.2);
+                    gain.gain.setValueAtTime(0.07, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+                    osc.start();
+                    osc.stop(now + 0.25);
+                } else if (type === 'trash') {
+                    const now = audioCtx.currentTime;
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(300, now);
+                    osc.frequency.exponentialRampToValueAtTime(80, now + 0.15);
+                    gain.gain.setValueAtTime(0.05, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+                    osc.start();
+                    osc.stop(now + 0.15);
+                }
+            } catch (e) {
+                console.log('Audio Context interaction required');
+            }
+        }
+    </script>
+
+    <!-- UI Core: Scroll Progress Indicator -->
+    <div class="fixed top-0 left-0 w-full h-1.5 z-50 bg-stone-200 dark:bg-stone-800">
+        <div id="scrollProgressBar" class="h-full bg-gradient-to-r from-brand-pink to-brand-mint w-0 transition-all duration-75"></div>
+    </div>
+
+    <!-- Cozy Dynamic Toast Notifications Wrapper -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 pointer-events-none"></div>
+
+    <!-- Cozy Navigation Bar -->
+    <nav class="fixed top-1.5 left-0 right-0 z-40 bg-white/80 dark:bg-stone-900/80 backdrop-blur-md border-b border-pink-100 dark:border-stone-800 transition-all duration-300">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <a href="#" onclick="playSound('click')" class="flex items-center space-x-2">
+                    <span class="bg-gradient-to-br from-brand-pink to-brand-mint text-white px-2.5 py-1 rounded-lg text-xs font-game tracking-wider shadow-sm">
+                        🌸 GDJ
+                    </span>
+                    <span class="font-bold text-base sm:text-lg text-brand-dark dark:text-stone-100 hover:text-brand-pinkDark dark:hover:text-brand-mint transition-colors font-cute text-2xl">
+                        민주의 성장 일기장 <span class="text-xs text-brand-pinkDark dark:text-brand-mint font-mono font-normal">v2.5</span>
+                    </span>
+                </a>
+
+                <!-- Nav Menu -->
+                <div class="hidden md:flex items-center space-x-6 text-sm font-medium text-brand-slate dark:text-stone-300">
+                    <a href="#about" onclick="playSound('click')" class="hover:text-brand-pinkDark dark:hover:text-brand-mint transition-colors relative group py-1">
+                        오늘의 나 (About)
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-brand-pink transition-all group-hover:w-full"></span>
+                    </a>
+                    <a href="#projects" onclick="playSound('click')" class="hover:text-brand-pinkDark dark:hover:text-brand-mint transition-colors relative group py-1">
+                        개발 실습록 (Projects)
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-brand-mint transition-all group-hover:w-full"></span>
+                    </a>
+                    <a href="#skills" onclick="playSound('click')" class="hover:text-brand-pinkDark dark:hover:text-brand-mint transition-colors relative group py-1">
+                        장착 무기 (Skills)
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-brand-pink transition-all group-hover:w-full"></span>
+                    </a>
+                    <a href="#archive" onclick="playSound('click')" class="hover:text-brand-pinkDark dark:hover:text-brand-mint transition-colors relative group py-1">
+                        성장 아카이브 (RPG)
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-brand-mint transition-all group-hover:w-full"></span>
+                    </a>
+                    <a href="#contact" onclick="playSound('click')" class="hover:text-brand-pinkDark dark:hover:text-brand-mint transition-colors relative group py-1">
+                        방명록 (Contact)
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-brand-pink transition-all group-hover:w-full"></span>
+                    </a>
+                </div>
+
+                <!-- Control Buttons (Sound & Dark Mode Switch & Reset) -->
+                <div class="flex items-center space-x-2">
+                    <!-- Reset Game Progress Button -->
+                    <button onclick="resetRpgProgress()" class="text-stone-400 hover:text-red-500 border border-stone-200 dark:border-stone-800 p-2 rounded-xl transition-all shadow-sm" title="성장 시스템 초기화">
+                        <i class="fas fa-redo-alt"></i>
+                    </button>
+                    <!-- Dark/Light Toggle -->
+                    <button id="themeToggle" class="text-brand-slate hover:text-brand-pink dark:text-stone-400 dark:hover:text-brand-mint border border-stone-200 dark:border-stone-800 p-2 rounded-xl transition-all shadow-sm" title="다크/라이트 모드">
+                        <i id="themeIcon" class="fas fa-moon"></i>
+                    </button>
+                    <!-- Audio toggler -->
+                    <button id="soundToggle" class="text-brand-pink border border-pink-200 hover:border-brand-pink dark:border-stone-800 bg-pink-50/50 dark:bg-stone-800/50 hover:bg-pink-50 p-2 rounded-xl transition-all shadow-sm" title="효과음 켜기/끄기">
+                        <i id="soundIcon" class="fas fa-volume-up"></i>
+                    </button>
+                    <!-- Mobile Hamburger -->
+                    <button id="mobileMenuBtn" class="md:hidden p-2 text-brand-slate dark:text-stone-300 hover:text-brand-pink" aria-label="메뉴 열기">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Dropdown Navigation -->
+        <div id="mobileMenu" class="hidden md:hidden bg-white/95 dark:bg-stone-900/95 border-t border-pink-100 dark:border-stone-800 transition-all duration-300">
+            <div class="px-3 pt-2 pb-5 space-y-2 text-center text-base font-semibold text-brand-slate dark:text-stone-300 font-cute text-xl">
+                <a href="#about" onclick="toggleMobileMenu(); playSound('click');" class="block py-2.5 rounded-xl hover:bg-pink-50 dark:hover:bg-stone-800 hover:text-brand-pinkDark">오늘의 나 (About)</a>
+                <a href="#projects" onclick="toggleMobileMenu(); playSound('click');" class="block py-2.5 rounded-xl hover:bg-emerald-50 dark:hover:bg-stone-800 hover:text-brand-mintDark">개발 실습록 (Projects)</a>
+                <a href="#skills" onclick="toggleMobileMenu(); playSound('click');" class="block py-2.5 rounded-xl hover:bg-pink-50 dark:hover:bg-stone-800 hover:text-brand-pinkDark">장착 무기 (Skills)</a>
+                <a href="#archive" onclick="toggleMobileMenu(); playSound('click');" class="block py-2.5 rounded-xl hover:bg-emerald-50 dark:hover:bg-stone-800 hover:text-brand-mintDark">성장 아카이브 (RPG)</a>
+                <a href="#contact" onclick="toggleMobileMenu(); playSound('click');" class="block py-2.5 rounded-xl hover:bg-pink-50 dark:hover:bg-stone-800 hover:text-brand-pinkDark">방명록 (Contact)</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Header: The Diary Cover Page -->
+    <header class="pt-32 pb-16 md:pt-40 md:pb-24 relative overflow-hidden bg-gradient-to-b from-pink-50/60 via-emerald-50/20 to-brand-bg dark:from-stone-900/50 dark:via-stone-950 dark:to-stone-950">
+        <!-- Cute pastel circle decorations -->
+        <div class="absolute top-20 left-10 w-44 h-44 bg-pink-200/30 dark:bg-pink-900/10 rounded-full blur-2xl font-sans"></div>
+        <div class="absolute bottom-10 right-20 w-60 h-60 bg-emerald-200/20 dark:bg-emerald-900/10 rounded-full blur-3xl"></div>
+
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Hero Left: Title & Concept introduction -->
+                <div class="lg:col-span-7 text-center lg:text-left space-y-6 animate-fade-in">
+                    <!-- Daily Diary Badge -->
+                    <div class="inline-flex items-center space-x-2 bg-gradient-to-r from-pink-100 to-emerald-100 dark:from-pink-950/50 dark:to-emerald-950/50 text-brand-pinkDark dark:text-brand-mint px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-2 border border-pink-200 dark:border-stone-800">
+                        <span class="w-2.5 h-2.5 rounded-full bg-brand-pink animate-ping"></span>
+                        <span>오늘도 성장 중인 개발 일기장 🌸</span>
+                    </div>
+
+                    <!-- Main Catchphrase with JS Typewriter Container -->
+                    <h1 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-tight min-h-[140px] sm:min-h-[160px]">
+                        매일 공부한 내용을 기록하며 <br/>
+                        꾸준히 자라나는 개발자, <br/>
+                        <span id="typewriter" class="text-transparent bg-clip-text bg-gradient-to-r from-brand-pinkDark to-brand-mintDark dark:from-brand-pink dark:to-brand-mint font-cute text-4xl sm:text-5xl md:text-6xl font-bold"></span><span class="text-brand-pink dark:text-brand-mint animate-pulse font-sans">|</span>
+                    </h1>
+
+                    <!-- Diary Entry Snippet style -->
+                    <div class="bg-white/80 dark:bg-stone-900/80 p-5 rounded-2xl border-l-4 border-brand-pink shadow-sm space-y-2 text-left">
+                        <p class="text-xs text-brand-pink dark:text-brand-mint font-bold font-mono">📅 2026년 7월 13일 (월) - 오늘의 기록</p>
+                        <p class="text-sm sm:text-base text-brand-slate dark:text-stone-300 leading-relaxed font-sans">
+                            싸피에서 새롭게 배우는 내용을 저장하고있다. 매일 새롭게 배우는 배움의 모든 순간을 일기장처럼 이곳에 가득 적어두고 있다.~~
+                        </p>
+                    </div>
+
+                    <!-- CTA Buttons -->
+                    <div class="flex flex-col sm:flex-row justify-center lg:justify-start items-center gap-4 pt-2">
+                        <a href="#projects" onclick="playSound('click')" class="w-full sm:w-auto text-center bg-brand-dark hover:bg-stone-800 dark:bg-stone-800 dark:hover:bg-stone-700 text-white font-semibold px-8 py-4 rounded-2xl shadow-lg transition-all transform hover:-translate-y-1 flex items-center justify-center space-x-2">
+                            <span>실습 기록장 (Portfolio) 보기</span>
+                            <i class="fas fa-chevron-right text-xs text-brand-pink"></i>
+                        </a>
+                        <a href="#archive" onclick="playSound('click'); highlightArchive();" class="w-full sm:w-auto text-center border-2 border-dashed border-brand-pink hover:bg-pink-50/50 dark:border-stone-800 dark:hover:bg-stone-800/50 text-brand-pinkDark dark:text-brand-mint font-semibold px-8 py-4 rounded-2xl transition-all transform hover:-translate-y-1 flex items-center justify-center space-x-2">
+                            <span>성장 기록실 (RPG)</span>
+                            <span id="heroTierBadge" class="bg-brand-mint text-brand-dark px-1.5 py-0.5 rounded text-[10px] font-game shadow-xs">BRONZE</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Hero Right: Interactive Character Dashboard -->
+                <div class="lg:col-span-5 flex justify-center">
+                    <div class="w-full max-w-[370px] bg-white dark:bg-stone-900 rounded-3xl shadow-xl border-4 border-pink-100 dark:border-stone-800 p-6 relative animate-float">
+                        <!-- Card header style -->
+                        <div class="flex items-center justify-between mb-4 pb-3 border-b border-pink-50 dark:border-stone-800">
+                            <div class="flex items-center space-x-1.5">
+                                <span class="w-3 h-3 rounded-full bg-brand-pink"></span>
+                                <span class="w-3 h-3 rounded-full bg-brand-mint"></span>
+                                <span class="w-3 h-3 rounded-full bg-yellow-400"></span>
+                            </div>
+                            <span class="text-xs font-game text-pink-300 dark:text-stone-500">DIARY_STATS.EXE</span>
+                        </div>
+
+                        <!-- Character Area -->
+                        <div class="relative bg-gradient-to-tr from-pink-50 to-emerald-50 dark:from-pink-950/20 dark:to-emerald-950/20 rounded-2xl p-6 mb-4 flex flex-col items-center group border border-pink-100/50 dark:border-stone-800">
+                            <span class="absolute top-4 left-4 text-xs font-bold bg-brand-pink/10 text-brand-pinkDark dark:text-brand-pink px-2 py-0.5 rounded-full border border-pink-200 dark:border-stone-800">HTML/CSS</span>
+                            <span class="absolute bottom-6 right-4 text-xs font-bold bg-brand-mint/10 text-brand-mintDark dark:text-brand-mint px-2 py-0.5 rounded-full border border-emerald-200 dark:border-stone-800">JavaScript</span>
+                            <span class="absolute top-12 right-6 text-xs font-bold bg-yellow-100 dark:bg-yellow-950/30 text-yellow-800 dark:text-yellow-400 px-2 py-0.5 rounded-full font-sans">SQL</span>
+
+                            <!-- Character SVG (Charming Pink & Mint Slime) with Custom Squish Animation -->
+                            <div class="w-32 h-32 flex items-center justify-center mb-2 cursor-pointer" onclick="squishCharacter()">
+                                <svg id="heroCharacter" class="w-full h-full transition-transform duration-300 group-hover:scale-110" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <linearGradient id="slimeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" stop-color="#F472B6" />
+                                            <stop offset="100%" stop-color="#34D399" />
+                                        </linearGradient>
+                                    </defs>
+                                    <path d="M15 75C15 50 35 40 50 40C65 40 85 50 85 75C85 85 75 90 50 90C25 90 15 85 15 75Z" fill="url(#slimeGrad)"/>
+                                    <path d="M22 75C22 83 38 86 50 86C62 86 78 83 78 75C78 68 70 65 50 65C30 65 22 68 22 75Z" fill="#1C1917" opacity="0.15"/>
+                                    <circle cx="38" cy="68" r="4.5" fill="#1C1917"/>
+                                    <circle cx="62" cy="68" r="4.5" fill="#1C1917"/>
+                                    <circle cx="39.5" cy="66" r="1.5" fill="white"/>
+                                    <circle cx="63.5" cy="66" r="1.5" fill="white"/>
+                                    <circle cx="30" cy="74" r="3.5" fill="#DB2777" opacity="0.5"/>
+                                    <circle cx="70" cy="74" r="3.5" fill="#DB2777" opacity="0.5"/>
+                                    <path d="M47 74C47 76.5 53 76.5 53 74" stroke="#1C1917" stroke-width="2.5" stroke-linecap="round"/>
+                                    <path d="M50 32C48 28 52 28 50 32Z" stroke="#34D399" stroke-width="3" stroke-linecap="round"/>
+                                    <circle cx="50" cy="35" r="2.5" fill="#F59E0B"/>
+                                </svg>
+                            </div>
+
+                            <!-- Interactive EXP Button -->
+                            <button onclick="feedExp(15);" class="mt-2 bg-white dark:bg-stone-900 hover:bg-brand-pink hover:text-white dark:hover:bg-brand-pink border-2 border-brand-pink text-brand-pinkDark dark:text-brand-pink text-xs font-bold py-1.5 px-4 rounded-full transition-all active:scale-95 shadow-xs flex items-center space-x-1 font-sans">
+                                <i class="fas fa-magic text-xs text-brand-mint animate-pulse"></i> <span>오늘 공부 채우기 (EXP +15)</span>
+                            </button>
+                        </div>
+
+                        <!-- Status Bar -->
+                        <div class="space-y-3 font-sans text-left">
+                            <div class="flex justify-between items-center text-xs">
+                                <span id="heroTitleBadge" class="font-bold text-stone-400 dark:text-stone-500 font-game text-[9px]">BRONZE RUNNER 🏃</span>
+                                <span class="text-brand-pinkDark dark:text-brand-pink font-game text-[9px] animate-pulse">GROWING UP</span>
+                            </div>
+                            <div class="flex justify-between items-end">
+                                <div>
+                                    <div class="text-xs text-stone-400 dark:text-stone-500">나의 칭호</div>
+                                    <div id="characterTitle" class="font-bold text-brand-dark dark:text-stone-100 text-sm">성실한 기록러</div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-xs text-stone-400 dark:text-stone-500">일기 레벨</span>
+                                    <span id="heroLevel" class="font-game text-brand-pinkDark dark:text-brand-mint text-sm block">03</span>
+                                </div>
+                            </div>
+
+                            <!-- EXP Meter -->
+                            <div>
+                                <div class="flex justify-between text-[11px] mb-1 text-stone-400 dark:text-stone-500">
+                                    <span>오늘의 성장 축적도 (EXP)</span>
+                                    <span id="heroExpText" class="font-bold text-brand-mintDark dark:text-brand-mint">70%</span>
+                                </div>
+                                <div class="w-full bg-stone-100 dark:bg-stone-800 h-3 rounded-full overflow-hidden p-0.5 border border-stone-200 dark:border-stone-700">
+                                    <div id="heroExpBar" class="bg-gradient-to-r from-brand-pink to-brand-mint h-full rounded-full transition-all duration-300" style="width: 70%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- About Me Section -->
+    <section id="about" class="py-20 bg-white dark:bg-stone-900">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-14">
+                <span class="inline-block text-brand-pink text-xs font-game tracking-widest uppercase mb-2">My History</span>
+                <h3 class="text-3xl font-extrabold text-slate-900 dark:text-white font-cute text-4xl">나는 어떤 기록을 남기며 살아왔을까?</h3>
+                <div class="w-20 h-1 bg-gradient-to-r from-brand-pink to-brand-mint mx-auto mt-3 rounded-full"></div>
+            </div>
+
+            <!-- Diary Layout Frame -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch mb-16">
+                <!-- Left: Notebook Styled Daily Entries -->
+                <div class="lg:col-span-7 bg-brand-bg/50 dark:bg-stone-950/40 border border-stone-200 dark:border-stone-800 rounded-3xl p-6 md:p-8 shadow-sm relative overflow-hidden">
+                    <!-- Spiral Binder holes visual decoration -->
+                    <div class="absolute left-0 top-0 bottom-0 w-8 flex flex-col justify-around items-center py-6 border-r border-dashed border-stone-200 dark:border-stone-800">
+                        <span class="w-4 h-4 rounded-full bg-stone-300/60 dark:bg-stone-800 border border-stone-400/30"></span>
+                        <span class="w-4 h-4 rounded-full bg-stone-300/60 dark:bg-stone-800 border border-stone-400/30"></span>
+                        <span class="w-4 h-4 rounded-full bg-stone-300/60 dark:bg-stone-800 border border-stone-400/30"></span>
+                        <span class="w-4 h-4 rounded-full bg-stone-300/60 dark:bg-stone-800 border border-stone-400/30"></span>
+                        <span class="w-4 h-4 rounded-full bg-stone-300/60 dark:bg-stone-800 border border-stone-400/30"></span>
+                        <span class="w-4 h-4 rounded-full bg-stone-300/60 dark:bg-stone-800 border border-stone-400/30"></span>
+                    </div>
+
+                    <!-- Inner pages content -->
+                    <div class="pl-8 space-y-6 notebook-line text-sm text-brand-slate dark:text-stone-300 leading-relaxed text-left">
+                        
+                        <!-- Log Entry 1 -->
+                        <div class="space-y-1">
+                            <div class="flex items-center space-x-2">
+                                <span class="bg-brand-pink text-white text-[10px] px-2 py-0.5 rounded font-bold font-sans">과거</span>
+                                <span class="font-bold text-brand-dark dark:text-white font-mono text-xs">2026년 07월 - 데이터를 해독하던 시절</span>
+                            </div>
+                            <p class="font-cute text-xl text-stone-700 dark:text-stone-300 leading-normal pl-2">
+                                "클루싸피 알고리즘 추리게임을 진행하였음. 단서를 조합하며 연구실의 심오한 비밀을 밝혀내는게 참 재미있었음. 하지만 결정적인 단서를 획득할 수 없었던 것이 아쉬운 기억으로 남게 됨."
+                            </p>
+                        </div>
+
+                        <!-- Log Entry 2 -->
+                        <div class="space-y-1">
+                            <div class="flex items-center space-x-2">
+                                <span class="bg-brand-mint text-brand-dark text-[10px] px-2 py-0.5 rounded font-bold font-sans">도전</span>
+                                <span class="font-bold text-brand-dark dark:text-white font-mono text-xs">2025년 10월 - 직접 그리는 코딩의 세계로</span>
+                            </div>
+                            <p class="font-cute text-xl text-stone-700 dark:text-stone-300 leading-normal pl-2">
+                                "웹 개발 공부를 매일 3시간씩 기록하며 돌입함. HTML로 기획서의 골조를 올리고, CSS로 온갖 예쁜 칠을 입히며, 자바스크립트로 내 캐릭터가 EXP를 먹는 로직을 구현함. 무한한 커스텀이 가능한 브라우저 위에서 가슴이 떨렸음."
+                            </p>
+                        </div>
+
+                        <!-- Log Entry 3 -->
+                        <div class="space-y-1">
+                            <div class="flex items-center space-x-2">
+                                <span class="bg-gradient-to-r from-brand-pink to-brand-mint text-brand-dark text-[10px] px-2 py-0.5 rounded font-bold font-sans">현재</span>
+                                <span class="font-bold text-brand-dark dark:text-white font-mono text-xs">오늘 - 바이브 코딩과 Git 격파기</span>
+                            </div>
+                            <p class="font-cute text-xl text-stone-700 dark:text-stone-300 leading-normal pl-2">
+                                "오늘 어제에 이어서 바이브 코딩으로 홈페이지를 만들고 있다. git 명령어를 자유자재로 쓸 수 있도록 해야할텐데~~~"
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Visual Pink/Mint Stat Sheet -->
+                <div class="lg:col-span-5">
+                    <div class="bg-stone-900 text-white rounded-3xl p-6 shadow-md border-4 border-stone-700 h-full flex flex-col justify-between text-left">
+                        <div>
+                            <!-- Header Info -->
+                            <div class="flex items-center space-x-4 mb-6 pb-4 border-b border-stone-800">
+                                <div class="w-14 h-14 bg-gradient-to-br from-brand-pink to-brand-mint rounded-2xl flex items-center justify-center text-white text-2xl font-game shadow-md">
+                                    📖
+                                </div>
+                                <div>
+                                    <div class="text-xs text-brand-pink font-semibold">CHARACTER SHEET</div>
+                                    <div class="text-lg font-bold">고민주 (Go Min-ju)</div>
+                                    <div class="text-[10px] text-stone-400 font-mono">Status: MBTI - ENTP (뜨거운 논쟁을 즐기는 변론가)</div>
+                                </div>
+                            </div>
+
+                            <!-- Stat Levels -->
+                            <div class="space-y-4">
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-xs">
+                                        <span class="text-stone-300 font-bold">외향형 (E - Extraversion)</span>
+                                        <span class="text-brand-pink font-bold">60%</span>
+                                    </div>
+                                    <div class="w-full bg-stone-800 h-2 rounded-full overflow-hidden">
+                                        <div class="bg-brand-pink h-full rounded-full" style="width: 60%;"></div>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-xs">
+                                        <span class="text-stone-300 font-bold">직관형 (N - Intuition)</span>
+                                        <span class="text-brand-mint font-bold">90%</span>
+                                    </div>
+                                    <div class="w-full bg-stone-800 h-2 rounded-full overflow-hidden">
+                                        <div class="bg-brand-mint h-full rounded-full" style="width: 90%;"></div>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-xs">
+                                        <span class="text-stone-300 font-bold">사고형 (T - Thinking)</span>
+                                        <span class="text-brand-pink font-bold">55%</span>
+                                    </div>
+                                    <div class="w-full bg-stone-800 h-2 rounded-full overflow-hidden">
+                                        <div class="bg-brand-pink h-full rounded-full" style="width: 55%;"></div>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-xs">
+                                        <span class="text-stone-300 font-bold">인식형 (P - Perceiving)</span>
+                                        <span class="text-brand-mint font-bold">70%</span>
+                                    </div>
+                                    <div class="w-full bg-stone-800 h-2 rounded-full overflow-hidden">
+                                        <div class="bg-brand-mint h-full rounded-full" style="width: 70%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mini Journal Status Note -->
+                        <div class="mt-6 p-4 bg-stone-800 rounded-2xl text-xs leading-relaxed text-stone-300 border border-stone-700">
+                            <span class="text-brand-pink font-semibold">📝 한마디 기록:</span><br />
+                            "화려한 라이브러리 뒤에 가려지기보다 브라우저와 데이터를 날것 그대로 제어하는 바닐라 개발에 대한 집착을 사랑합니다."
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Learning Journey Timeline -->
+            <div class="mt-16 border-t border-dashed border-stone-200 dark:border-stone-800 pt-12">
+                <h4 class="text-2xl font-bold text-center mb-10 font-cute text-3xl text-slate-800 dark:text-stone-200">
+                    🕒 민주의 성장 연대표 (Timeline)
+                </h4>
+                
+                <div class="relative border-l-2 border-brand-pink/50 max-w-4xl mx-auto pl-8 space-y-10 text-left">
+                    
+                    <!-- Timeline Node 1 -->
+                    <div class="relative">
+                        <span class="absolute -left-[41px] top-1 bg-white dark:bg-stone-900 border-4 border-brand-pink rounded-full w-5 h-5 flex items-center justify-center">
+                            <span class="bg-brand-pink rounded-full w-1.5 h-1.5"></span>
+                        </span>
+                        <div class="space-y-1">
+                            <span class="text-xs font-mono text-brand-pink font-bold">2024. 01 ~ 2024. 12</span>
+                            <h5 class="text-lg font-bold text-slate-900 dark:text-white font-cute text-xl">데이터 분석의 눈을 밝히다</h5>
+                            <p class="text-xs sm:text-sm text-brand-slate dark:text-stone-300 leading-relaxed font-sans">
+                                R 프로그래밍과 데이터 핸들링을 학습. 마케팅 로그 데이터 분석 및 고객 지표 탐색. SQL을 통해 원하는 조건의 고객 타겟 그룹을 추출하며 인프라 지식과 데이터 해석 능력을 연마했다.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Timeline Node 2 -->
+                    <div class="relative">
+                        <span class="absolute -left-[41px] top-1 bg-white dark:bg-stone-900 border-4 border-brand-mint rounded-full w-5 h-5 flex items-center justify-center">
+                            <span class="bg-brand-mint rounded-full w-1.5 h-1.5"></span>
+                        </span>
+                        <div class="space-y-1">
+                            <span class="text-xs font-mono text-brand-mintDark dark:text-brand-mint font-bold">2025. 03 ~ 2025. 09</span>
+                            <h5 class="text-lg font-bold text-slate-900 dark:text-white font-cute text-xl">웹 코딩 기초 체력 및 마크업 정복</h5>
+                            <p class="text-xs sm:text-sm text-brand-slate dark:text-stone-300 leading-relaxed font-sans">
+                                "지표를 뽑는 일에 그치지 않고, 화면을 직접 그리겠다"라는 결심으로 시작. HTML5 구조 설계와 CSS3 반응형 레이아웃, 모던한 화면 디자인에 눈을 떠 매일 하루를 공부 코드로 기록하기 시작함.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Timeline Node 3 -->
+                    <div class="relative">
+                        <span class="absolute -left-[41px] top-1 bg-white dark:bg-stone-900 border-4 border-brand-pink rounded-full w-5 h-5 flex items-center justify-center">
+                            <span class="bg-brand-pink rounded-full w-1.5 h-1.5"></span>
+                        </span>
+                        <div class="space-y-1">
+                            <span class="text-xs font-mono text-brand-pink font-bold">2026. 01 ~ 현재</span>
+                            <h5 class="text-lg font-bold text-slate-900 dark:text-white font-cute text-xl">바닐라 자바스크립트 & 서비스 융합형 개발자</h5>
+                            <p class="text-xs sm:text-sm text-brand-slate dark:text-stone-300 leading-relaxed font-sans">
+                                비동기 흐름 제어, 상태 관리 등 모던 웹 개발의 코어 원리를 격파함. 분석 데이터베이스 연산 경험과 결합하여 물류 데이터 분석 웹 서비스를 성공적으로 아우르고 있다.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Project Section -->
+    <section id="projects" class="py-20 bg-brand-bg dark:bg-stone-950">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-14">
+                <span class="inline-block text-brand-mintDark dark:text-brand-mint text-xs font-game tracking-widest uppercase mb-2">My Milestones</span>
+                <h3 class="text-3xl font-extrabold text-slate-900 dark:text-white font-cute text-4xl">내가 직접 해낸 개발 실습 기록장</h3>
+                <div class="w-20 h-1 bg-gradient-to-r from-brand-mint to-brand-pink mx-auto mt-3 rounded-full"></div>
+            </div>
+
+            <!-- Single Featured Diary Entry Layout -->
+            <div class="bg-white dark:bg-stone-900 rounded-3xl overflow-hidden shadow-sm border-2 border-pink-100 dark:border-stone-800 flex flex-col lg:flex-row mb-12 interactive-card text-left">
+                <!-- Project Cover Style Left -->
+                <div class="lg:w-2/5 bg-gradient-to-b from-stone-900 via-stone-900 to-brand-pinkDark p-8 flex flex-col justify-between text-white relative">
+                    <div class="absolute inset-0 opacity-10" style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 20px 20px;"></div>
+                    
+                    <div class="relative z-10">
+                        <span class="bg-brand-mint text-brand-dark px-3 py-1 rounded-full text-[10px] font-game uppercase tracking-wider">주요 실습기록</span>
+                        <h4 class="text-2xl sm:text-3xl font-bold mt-4 font-cute">물류 정체 데이터 탐지 및 분석 웹 대시보드</h4>
+                        <p class="text-pink-100 text-xs mt-2 leading-relaxed font-sans">
+                            바닐라 JS 기반으로 로그 데이터 테이블을 정제하고, 현업에서 쓰이는 구역별 실시간 정체 히트맵 UI를 프로토타이핑함.
+                        </p>
+                    </div>
+
+                    <div class="mt-8 lg:mt-0 space-y-4 relative z-10 font-sans">
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-stone-800 text-brand-mint text-[10px] px-2.5 py-1 rounded-md font-mono">HTML5/CSS3</span>
+                            <span class="bg-stone-800 text-brand-pink text-[10px] px-2.5 py-1 rounded-md font-mono">JavaScript</span>
+                            <span class="bg-stone-800 text-emerald-300 text-[10px] px-2.5 py-1 rounded-md font-mono">SQL</span>
+                            <span class="bg-stone-800 text-pink-300 text-[10px] px-2.5 py-1 rounded-md font-mono">Tailwind</span>
+                        </div>
+                        <div class="text-[10px] text-pink-200">
+                            기록 시각: 2026.03 ~ 2026.05 (동료와 함께 설계함)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project Content Right -->
+                <div class="lg:w-3/5 p-8 sm:p-10 space-y-6">
+                    <div>
+                        <h5 class="text-xs font-game text-brand-pinkDark dark:text-brand-pink mb-1">MEMO-01. OVERVIEW</h5>
+                        <h4 class="text-xl font-bold text-slate-900 dark:text-white font-cute text-2xl">물류 현장의 발목을 잡는 '병목 현상' 시각화</h4>
+                        <p class="text-xs sm:text-sm text-brand-slate dark:text-stone-300 mt-2 leading-relaxed">
+                            수많은 터미널 간 지연 상태 로그를 텍스트로만 쳐다보고 조치하는 비효율을 고쳐보기 위해 작성한 인터랙티브 분석 시트 형태의 웹 애플리케이션이다.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 border-t border-dashed border-pink-100 dark:border-stone-800">
+                        <!-- Problem Diary -->
+                        <div class="space-y-1.5">
+                            <div class="flex items-center space-x-2 text-brand-pinkDark dark:text-brand-pink font-bold text-sm">
+                                <span>❌</span>
+                                <span class="font-cute text-lg">발견했던 문제상황</span>
+                            </div>
+                            <p class="text-xs text-brand-slate dark:text-stone-300 leading-relaxed">
+                                매일 수만 건의 배송 지연 로그가 누적되지만, 데이터베이스 구조가 복잡해 실제 물류 정체가 발생한 '진짜 포인트'를 한눈에 발견할 수 없었음.
+                            </p>
+                        </div>
+                        <!-- Solution Diary -->
+                        <div class="space-y-1.5">
+                            <div class="flex items-center space-x-2 text-brand-mintDark dark:text-brand-mint font-bold text-sm">
+                                <span>💡</span>
+                                <span class="font-cute text-lg">나의 해결 과정</span>
+                            </div>
+                            <p class="text-xs text-brand-slate dark:text-stone-300 leading-relaxed">
+                                복잡한 외부 프레임워크 대신 바닐라 JavaScript의 데이터 매핑 루틴을 적용해 로그 데이터를 집계했고, 브라우저 화면상의 격자 맵에 병목 점수에 따른 민트-핑크 경고 컬러 레이어를 씌우는 히트맵 모듈을 개발함.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Highlighted Results Diary -->
+                    <div class="bg-gradient-to-r from-pink-50 to-emerald-50 dark:from-pink-950/20 dark:to-emerald-950/20 p-4 rounded-2xl border border-pink-100 dark:border-stone-800">
+                        <div class="font-bold text-xs text-brand-pinkDark dark:text-brand-pink mb-2 flex items-center font-game">
+                            📊 REAL OUTPUT REPORT
+                        </div>
+                        <ul class="text-xs text-slate-700 dark:text-stone-300 space-y-1.5 list-disc pl-4 leading-relaxed font-sans">
+                            <li>순수 바닐라 모듈 패턴으로 개발하여 무거운 종속 라이브러리 없이 초기 속도를 <strong>45% 단축</strong>함.</li>
+                            <li>지연 분석 필터 동작을 자동 연산화시켜서 현업 담당자가 병목 지점을 인지하는 시간을 <strong>실시간 수준으로 변혁</strong>함.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Supporting Small Diary Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+                <!-- Sub Project 1 -->
+                <div class="bg-white dark:bg-stone-900 rounded-2xl p-6 shadow-xs border border-pink-100 dark:border-stone-800 hover:border-brand-pink hover:shadow-md transition-all flex flex-col justify-between interactive-card">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-[10px] font-game bg-pink-100 dark:bg-pink-950 text-brand-pinkDark dark:text-brand-pink px-2 py-0.5 rounded">R & SQL 실습</span>
+                            <span class="text-xs text-stone-400 font-mono">Diary #14</span>
+                        </div>
+                        <h4 class="text-lg font-bold text-slate-900 dark:text-white mb-2 font-cute text-xl">커머스 유저 이탈 분석 & 이메일 발송 자동화 설계</h4>
+                        <p class="text-xs text-brand-slate dark:text-stone-300 leading-relaxed mb-4">
+                            구매 주기 데이터를 윈도우 쿼리로 분해해서 생존율 곡선을 그림. 이탈 전조가 포착된 유저들에게 메일링을 날릴 수 있도록 트리거 조건 알고리즘을 작성했던 성취감이 기억남.
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap gap-2 pt-3 border-t border-stone-50 dark:border-stone-800">
+                        <span class="text-[10px] bg-stone-100 dark:bg-stone-800 px-2 py-0.5 rounded text-stone-600 dark:text-stone-300 font-mono">R (ggplot2)</span>
+                        <span class="text-[10px] bg-stone-100 dark:bg-stone-800 px-2 py-0.5 rounded text-stone-600 dark:text-stone-300 font-mono">PostgreSQL</span>
+                        <span class="text-[10px] bg-stone-100 dark:bg-stone-800 px-2 py-0.5 rounded text-stone-600 dark:text-stone-300 font-mono">Cohorts</span>
+                    </div>
+                </div>
+
+                <!-- Sub Project 2 -->
+                <div class="bg-white dark:bg-stone-900 rounded-2xl p-6 shadow-xs border border-pink-100 dark:border-stone-800 hover:border-brand-mint hover:shadow-md transition-all flex flex-col justify-between interactive-card">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-[10px] font-game bg-emerald-100 dark:bg-emerald-950 text-brand-mintDark dark:text-brand-mint px-2 py-0.5 rounded font-sans">WEB APP 토이</span>
+                            <span class="text-xs text-stone-400 font-mono">Diary #27</span>
+                        </div>
+                        <h4 class="text-lg font-bold text-slate-900 dark:text-white mb-2 font-cute text-xl">Pixel Habit Tracker (습관 모음 RPG 앱)</h4>
+                        <p class="text-xs text-brand-slate dark:text-stone-300 leading-relaxed mb-4">
+                            오늘 할 일을 실천할 때마다 픽셀 몬스터가 동반 레벨업하는 브라우저 앱을 개발함. 브라우저가 잠시 닫히더라도 데이터가 소멸하지 않게 LocalStorage API를 적용하는 원리를 깨달음.
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap gap-2 pt-3 border-t border-stone-50 dark:border-stone-800">
+                        <span class="text-[10px] bg-stone-100 dark:bg-stone-800 px-2 py-0.5 rounded text-stone-600 dark:text-stone-300 font-mono">HTML5/CSS</span>
+                        <span class="text-[10px] bg-stone-100 dark:bg-stone-800 px-2 py-0.5 rounded text-stone-600 dark:text-stone-300 font-mono">JS Storage</span>
+                        <span class="text-[10px] bg-stone-100 dark:bg-stone-800 px-2 py-0.5 rounded text-stone-600 dark:text-stone-300 font-mono">Event Flow</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skill Section -->
+    <section id="skills" class="py-20 bg-white dark:bg-stone-900">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-14">
+                <span class="inline-block text-brand-pink text-xs font-game tracking-widest uppercase mb-2">My Inventory</span>
+                <h3 class="text-3xl font-extrabold text-slate-900 dark:text-white font-cute text-4xl">오늘까지 훈련해 온 나의 장착 무기들</h3>
+                <div class="w-20 h-1 bg-gradient-to-r from-brand-pink to-brand-mint mx-auto mt-3 rounded-full"></div>
+                <p class="text-xs text-stone-400 dark:text-stone-500 mt-2">카드를 호버하면 일기장에서 발췌한 강점 요약이 나타납니다.</p>
+            </div>
+
+            <!-- Skills Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+                
+                <!-- Skill 1: HTML -->
+                <div class="group relative bg-pink-50/20 dark:bg-stone-950/30 hover:bg-white dark:hover:bg-stone-950 rounded-2xl p-6 border-2 border-pink-100/60 dark:border-stone-800 hover:border-brand-pink hover:shadow-lg transition-all duration-300 text-center transform hover:-translate-y-1.5">
+                    <div class="w-12 h-12 bg-pink-100 dark:bg-pink-950/50 text-brand-pinkDark dark:text-brand-pink rounded-xl flex items-center justify-center text-2xl mx-auto mb-4 group-hover:scale-110 transition-transform shadow-xs">
+                        <i class="fab fa-html5"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-800 dark:text-stone-100 text-sm font-cute text-xl">HTML5</h4>
+                    <p class="text-[9px] text-brand-pink font-game mt-1">LV. MASTER</p>
+                    
+                    <div class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-44 bg-stone-900 text-white rounded-xl p-2.5 text-xs opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-300 shadow-lg z-20 font-sans leading-relaxed">
+                        웹 표준 준수 마크업 설계. 시맨틱 태그를 용도에 맞추어 단단하게 가공함.
+                    </div>
+                </div>
+
+                <!-- Skill 2: CSS -->
+                <div class="group relative bg-emerald-50/10 dark:bg-stone-950/30 hover:bg-white dark:hover:bg-stone-950 rounded-2xl p-6 border-2 border-emerald-100/60 dark:border-stone-800 hover:border-brand-mint hover:shadow-lg transition-all duration-300 text-center transform hover:-translate-y-1.5">
+                    <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-950/50 text-brand-mintDark dark:text-brand-mint rounded-xl flex items-center justify-center text-2xl mx-auto mb-4 group-hover:scale-110 transition-transform shadow-xs">
+                        <i class="fab fa-css3-alt"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-800 dark:text-stone-100 text-sm font-cute text-xl">CSS3</h4>
+                    <p class="text-[9px] text-brand-mintDark dark:text-brand-mint font-game mt-1">LV. ADVANCED</p>
+                    
+                    <div class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-44 bg-stone-900 text-white rounded-xl p-2.5 text-xs opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-300 shadow-lg z-20 font-sans leading-relaxed">
+                        Flexbox/Grid 뼈대 구성 및 반응형 화면 제작. 핑크/민트 감성 구현 특화.
+                    </div>
+                </div>
+
+                <!-- Skill 3: JavaScript -->
+                <div class="group relative bg-pink-50/20 dark:bg-stone-950/30 hover:bg-white dark:hover:bg-stone-950 rounded-2xl p-6 border-2 border-pink-100/60 dark:border-stone-800 hover:border-brand-pink hover:shadow-lg transition-all duration-300 text-center transform hover:-translate-y-1.5">
+                    <div class="w-12 h-12 bg-pink-200/50 dark:bg-pink-950/50 text-brand-pinkDark dark:text-brand-pink rounded-xl flex items-center justify-center text-2xl mx-auto mb-4 group-hover:scale-110 transition-transform shadow-xs">
+                        <i class="fab fa-js-square"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-800 dark:text-stone-100 text-sm font-cute text-xl">JavaScript</h4>
+                    <p class="text-[9px] text-brand-pink font-game mt-1">LV. EXPERT</p>
+                    
+                    <div class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-44 bg-stone-900 text-white rounded-xl p-2.5 text-xs opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-300 shadow-lg z-20 font-sans leading-relaxed">
+                        ES6+ 문법, 비동기 통신(Async/Await) 제어. 브라우저 DOM 조작 전문.
+                    </div>
+                </div>
+
+                <!-- Skill 4: SQL -->
+                <div class="group relative bg-emerald-50/10 dark:bg-stone-950/30 hover:bg-white dark:hover:bg-stone-950 rounded-2xl p-6 border-2 border-emerald-100/60 dark:border-stone-800 hover:border-brand-mint hover:shadow-lg transition-all duration-300 text-center transform hover:-translate-y-1.5">
+                    <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-950/50 text-brand-mintDark dark:text-brand-mint rounded-xl flex items-center justify-center text-2xl mx-auto mb-4 group-hover:scale-110 transition-transform shadow-xs">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-800 dark:text-stone-100 text-sm font-cute text-xl">SQL</h4>
+                    <p class="text-[9px] text-brand-mintDark dark:text-brand-mint font-game mt-1">LV. MASTER</p>
+                    
+                    <div class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-44 bg-stone-900 text-white rounded-xl p-2.5 text-xs opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-300 shadow-lg z-20 font-sans leading-relaxed">
+                        복잡한 테이블 조인, 서브쿼리 최적화 및 원격 지표 추출 집계 가능.
+                    </div>
+                </div>
+
+                <!-- Skill 5: R -->
+                <div class="group relative bg-pink-50/20 dark:bg-stone-950/30 hover:bg-white dark:hover:bg-stone-950 rounded-2xl p-6 border-2 border-pink-100/60 dark:border-stone-800 hover:border-brand-pink hover:shadow-lg transition-all duration-300 text-center transform hover:-translate-y-1.5">
+                    <div class="w-12 h-12 bg-pink-100 dark:bg-pink-950/50 text-brand-pinkDark dark:text-brand-pink rounded-xl flex items-center justify-center text-xl mx-auto mb-4 group-hover:scale-110 transition-transform shadow-xs">
+                        <span class="font-black text-sm">R</span>
+                    </div>
+                    <h4 class="font-bold text-slate-800 dark:text-stone-100 text-sm font-cute text-xl">R Language</h4>
+                    <p class="text-[9px] text-brand-pink font-game mt-1">LV. ADVANCED</p>
+                    
+                    <div class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-44 bg-stone-900 text-white rounded-xl p-2.5 text-xs opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-300 shadow-lg z-20 font-sans leading-relaxed">
+                        dplyr 데이터 전처리 및 ggplot2 활용 데이터 관계 및 가속도 시각화.
+                    </div>
+                </div>
+
+                <!-- Skill 6: Git -->
+                <div class="group relative bg-emerald-50/10 dark:bg-stone-950/30 hover:bg-white dark:hover:bg-stone-950 rounded-2xl p-6 border-2 border-emerald-100/60 dark:border-stone-800 hover:border-brand-mint hover:shadow-lg transition-all duration-300 text-center transform hover:-translate-y-1.5">
+                    <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-950/50 text-brand-mintDark dark:text-brand-mint rounded-xl flex items-center justify-center text-2xl mx-auto mb-4 group-hover:scale-110 transition-transform shadow-xs">
+                        <i class="fab fa-git-alt"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-800 dark:text-stone-100 text-sm font-cute text-xl">Git</h4>
+                    <p class="text-[9px] text-brand-mintDark dark:text-brand-mint font-game mt-1">LV. ADVANCED</p>
+                    
+                    <div class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-44 bg-stone-900 text-white rounded-xl p-2.5 text-xs opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-300 shadow-lg z-20 font-sans leading-relaxed">
+                        안정적인 브랜칭(Git Flow), 충돌(Conflict) 분석 해결 및 이력 관리 숙련.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Growth Archive Section (Cozy RPG Grid Panel) -->
+    <section id="archive" class="py-20 bg-brand-bg dark:bg-stone-950 transition-colors duration-500">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-14">
+                <span class="inline-block bg-gradient-to-r from-pink-100 to-emerald-100 dark:from-pink-950 dark:to-emerald-950 border border-pink-200 dark:border-stone-800 text-brand-pinkDark dark:text-brand-mint px-3 py-1 rounded-md text-xs font-game tracking-wider mb-3 animate-bounce-slow">⭐ 나만의 차별화 학습실</span>
+                <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white font-cute text-4xl">Growth Archive (성장 기록실)</h2>
+                <div class="w-20 h-1 bg-gradient-to-r from-brand-pink to-brand-mint mx-auto mt-3 rounded-full"></div>
+                <p class="text-sm text-brand-slate dark:text-stone-300 mt-4 leading-relaxed">
+                    오늘까지 쌓아온 핵심 공부 로그들이다. 일기 카드를 클릭해 깊은 학습 기록을 열람해 보자!<br/>
+                    읽은 성과를 승인할 때마다 <strong class="text-brand-pinkDark dark:text-brand-pink">경험치(EXP)가 쌓이고</strong> 성장을 확인할 수 있음.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+                
+                <!-- Left Board: RPG Character Dashboard -->
+                <div class="lg:col-span-4 bg-stone-900 text-white rounded-3xl p-6 border-4 border-stone-800 shadow-xl relative space-y-6 text-left">
+                    <div class="absolute -top-3 -right-2 bg-brand-pink text-white px-2.5 py-1 rounded-md text-[8px] font-game shadow-md">DIARY ACTIVE</div>
+                    
+                    <div class="text-center">
+                        <p id="archiveTitleBadge" class="text-[10px] font-game text-brand-mint uppercase tracking-wider">Developer Level 03</p>
+                        <h4 class="text-xl font-bold mt-1 text-slate-100 font-cute text-2xl">고민주의 성장 계정 🌸</h4>
+                    </div>
+
+                    <!-- EXP Gauge sync dynamically with JS -->
+                    <div class="bg-stone-800 p-4 rounded-2xl border border-stone-700 space-y-3">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-stone-400 font-mono">EXP GAUGE</span>
+                            <span id="archiveExpVal" class="text-brand-pink font-game text-[9px]">70%</span>
+                        </div>
+                        <div class="w-full bg-stone-950 h-4 rounded-full overflow-hidden p-0.5 border border-stone-800">
+                            <div id="archiveExpBar" class="bg-gradient-to-r from-brand-pink to-brand-mint h-full rounded-full transition-all duration-300" style="width: 70%;"></div>
+                        </div>
+                        <div class="text-right">
+                            <span id="expNeededLabel" class="text-[10px] text-stone-400">Lv.3에서 다음 레벨까지: 30 EXP 필요함</span>
+                        </div>
+                    </div>
+
+                    <!-- Achievements checklist -->
+                    <div class="space-y-4">
+                        <div class="text-xs font-game text-brand-pink flex items-center">
+                            <i class="fas fa-trophy mr-1.5"></i> ACHIEVEMENTS
+                        </div>
+                        
+                        <div class="space-y-3 text-xs">
+                            <!-- Ach 1 -->
+                            <div class="flex items-center space-x-3 bg-stone-800/60 p-3 rounded-xl border border-stone-800">
+                                <span class="text-xl">🏆</span>
+                                <div>
+                                    <p class="font-bold text-slate-200">첫 데이터 분석 프로젝트 완료</p>
+                                    <p class="text-[9px] text-brand-mint font-game">CLEARED</p>
+                                </div>
+                            </div>
+                            <!-- Ach 2 -->
+                            <div class="flex items-center space-x-3 bg-stone-800/60 p-3 rounded-xl border border-stone-800">
+                                <span class="text-xl">🌱</span>
+                                <div>
+                                    <p class="font-bold text-slate-200">Git 동작 구조 학습 완료</p>
+                                    <p class="text-[9px] text-brand-mint font-game">CLEARED</p>
+                                </div>
+                            </div>
+                            <!-- Ach 3 -->
+                            <div id="achJs" class="flex items-center space-x-3 bg-stone-800/60 p-3 rounded-xl border border-stone-800 transition-colors duration-300">
+                                <span id="achJsIcon" class="text-xl filter grayscale">🚀</span>
+                                <div>
+                                    <p class="font-bold text-slate-200">JavaScript 비동기 렌더링 극복</p>
+                                    <p id="achJsState" class="text-[9px] text-brand-pink font-game">READ DIARY</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gamification: Retro Speed Dev Trivia Quiz -->
+                    <div class="bg-stone-800 p-4 rounded-2xl border border-stone-700 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[11px] font-game text-yellow-400"><i class="fas fa-gamepad"></i> DEV SPEED QUIZ</span>
+                            <span class="text-[9px] bg-yellow-400 text-stone-900 px-1 py-0.5 rounded font-bold font-sans">EXP 보너스!</span>
+                        </div>
+                        
+                        <!-- Quiz Content Area -->
+                        <div id="quizContainer" class="space-y-3">
+                            <div class="flex justify-between text-[10px] text-stone-400">
+                                <span id="quizStepLabel">질문 1 of 3</span>
+                                <span id="quizScoreLabel">점수: 0</span>
+                            </div>
+                            <p id="quizQuestion" class="text-xs font-semibold leading-relaxed text-slate-200">
+                                Q. Git에서 원격저장소에 보낼 Commit 대기 대상 파일들이 올라가 있는 임시 준비 영역의 이름은 무엇일까?
+                            </p>
+                            <div id="quizOptions" class="grid grid-cols-1 gap-2 text-xs">
+                                <!-- Dynamic options -->
+                            </div>
+                        </div>
+                        <!-- Quiz Feedback Area -->
+                        <div id="quizFeedback" class="hidden text-center text-xs space-y-2">
+                            <div id="quizResultText" class="font-bold font-cute text-lg text-brand-mint"></div>
+                            <button id="quizNextBtn" onclick="nextQuiz()" class="bg-gradient-to-r from-brand-pink to-brand-mint text-stone-900 font-bold px-3 py-1.5 rounded-lg text-xs hover:opacity-90 active:scale-95 transition-all">
+                                다음 문제 풀기 ➔
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Board: Quest Study Log Cards -->
+                <div class="lg:col-span-8 space-y-6">
+                    <!-- Action Header with Create Journal Button -->
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pb-4 border-b border-dashed border-stone-200 dark:border-stone-800">
+                        <h4 class="text-xl font-bold font-cute text-2xl text-slate-800 dark:text-stone-200">
+                            📜 학습 및 도전 로그 저널리즘
+                        </h4>
+                        <button onclick="openCreateQuestModal()" class="bg-gradient-to-r from-brand-pink to-brand-mint hover:opacity-90 text-stone-900 text-xs font-bold py-2.5 px-5 rounded-2xl shadow-sm flex items-center space-x-2 transition-transform transform active:scale-95">
+                            <i class="fas fa-plus"></i>
+                            <span>새 학습 기록 작성하기 (Add Log)</span>
+                        </button>
+                    </div>
+
+                    <!-- Quests Container (Dynamically rendered using JavaScript) -->
+                    <div id="questsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-left">
+                        <!-- Quest elements generated dynamically -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Unified Detailed Quest Viewer Modal -->
+    <div id="questViewModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-xs hidden">
+        <div class="bg-white dark:bg-stone-900 w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl border-4 border-pink-100 dark:border-stone-800 transform transition-all flex flex-col max-h-[85vh] text-left">
+            <div id="questModalHeader" class="bg-gradient-to-r from-brand-pink to-brand-mint p-5 text-brand-dark flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <span class="text-xl">📅</span>
+                    <h5 id="questModalTitle" class="font-bold font-cute text-2xl text-stone-900">오늘 배운 내용</h5>
+                </div>
+                <button onclick="closeModal('questViewModal')" class="text-brand-dark hover:text-white transition-colors text-2xl font-bold">&times;</button>
+            </div>
+            <div class="p-6 space-y-4 overflow-y-auto text-sm leading-relaxed text-brand-slate dark:text-stone-300 flex-1 font-sans">
+                <p id="questModalSub" class="font-bold text-slate-900 dark:text-white font-cute text-xl">📌 소제목 자리</p>
+                <p id="questModalDesc" class="text-xs sm:text-sm">
+                    상세 묘사 텍스트가 들어옵니다.
+                </p>
+                <div class="bg-pink-50 dark:bg-stone-950 p-4 rounded-2xl border-l-4 border-brand-pink space-y-2">
+                    <div class="font-bold text-brand-pinkDark dark:text-brand-pink text-xs font-cute text-lg">핵심 요약 노트:</div>
+                    <ul id="questModalBullets" class="list-disc pl-4 space-y-1 text-xs text-stone-700 dark:text-stone-300">
+                        <!-- Bullet elements -->
+                    </ul>
+                </div>
+                <p id="questModalFoot" class="text-xs text-stone-400 font-mono">
+                    * 느낀점 영역
+                </p>
+            </div>
+            <div class="p-4 bg-stone-50 dark:bg-stone-800 border-t border-stone-100 dark:border-stone-700 flex justify-between items-center">
+                <!-- Delete Quest option if it's user created -->
+                <button id="questModalDeleteBtn" class="text-red-500 hover:text-red-700 text-xs font-semibold hidden" onclick="triggerDeleteQuest()">
+                    <i class="fas fa-trash-alt mr-1"></i> 기록 삭제하기
+                </button>
+                <div class="flex-1 text-right">
+                    <button id="questModalApproveBtn" class="bg-brand-pink hover:bg-brand-pinkDark text-white font-bold py-2 px-5 rounded-xl transition-all shadow-sm flex items-center space-x-2 ml-auto">
+                        <span class="font-cute text-lg">일기 승인하기</span>
+                        <span id="questModalExpBadge" class="text-xs bg-white text-brand-pinkDark px-1.5 py-0.5 rounded-md font-mono">+10 EXP</span>
+                    </button>
+                    <div id="questModalApprovedMsg" class="text-brand-mintDark dark:text-brand-mint font-bold text-sm hidden">
+                        <i class="fas fa-check-circle"></i> 일기 승인 완료 (EXP 축적됨)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Custom Growth Quest Modal -->
+    <div id="questCreateModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-xs hidden">
+        <div class="bg-white dark:bg-stone-900 w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl border-4 border-emerald-100 dark:border-stone-800 transform transition-all flex flex-col max-h-[90vh] text-left">
+            <div class="bg-gradient-to-r from-brand-mint to-brand-pink p-5 text-brand-dark flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <span class="text-xl">✏️</span>
+                    <h5 class="font-bold font-cute text-2xl text-stone-900">새로운 성장 일기 쓰기</h5>
+                </div>
+                <button onclick="closeModal('questCreateModal')" class="text-brand-dark hover:text-white transition-colors text-2xl font-bold">&times;</button>
+            </div>
+            <div class="p-6 space-y-4 overflow-y-auto text-xs sm:text-sm text-brand-slate dark:text-stone-300 flex-1 font-sans">
+                <!-- Title & Category -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold text-stone-500">일기 대표 주제 (Title)</label>
+                        <input id="newQuestTitle" type="text" placeholder="예: React State 학습" class="w-full bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-800 p-2.5 rounded-xl text-xs outline-none focus:border-brand-mint">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold text-stone-500">기술 분류 (Category)</label>
+                        <select id="newQuestCategory" class="w-full bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-800 p-2.5 rounded-xl text-xs outline-none focus:border-brand-mint">
+                            <option value="Git">Git 버전 관리 🌿</option>
+                            <option value="JavaScript">JavaScript 개발 ⚡</option>
+                            <option value="SQL">데이터베이스 SQL 📊</option>
+                            <option value="HTML/CSS">HTML5 & CSS3 🎨</option>
+                            <option value="TypeScript">TypeScript 💡</option>
+                            <option value="React">React Framework 🚀</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Summary Intro -->
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-stone-500">한 줄 요약 (Summary)</label>
+                    <input id="newQuestSummary" type="text" placeholder="예: Props와 State의 비동기 갱신 원리 탐구" class="w-full bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-800 p-2.5 rounded-xl text-xs outline-none focus:border-brand-mint">
+                </div>
+
+                <!-- Subtitle & Detailed Description -->
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-stone-500">헤드라인 설명 (Header)</label>
+                    <input id="newQuestSubtitle" type="text" placeholder="예: 📌 컴포넌트의 생명 주기와 상태 변경점 파악" class="w-full bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-800 p-2.5 rounded-xl text-xs outline-none focus:border-brand-mint">
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-stone-500">배운 내용 기술 (Detailed Description)</label>
+                    <textarea id="newQuestDesc" rows="3" placeholder="오늘 공부한 사건이나 에러를 발견한 과정을 자유롭게 일기처럼 쓰세요..." class="w-full bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-800 p-3 rounded-xl text-xs outline-none focus:border-brand-mint resize-none"></textarea>
+                </div>
+
+                <!-- Bullet points & Footnote -->
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-stone-500">핵심 요약 포인트들 (줄 바꿈으로 구분)</label>
+                    <textarea id="newQuestBullets" rows="2" placeholder="첫째, 배운 핵심 내용&#10;둘째, 극복한 핵심 로직&#10;셋째, 느낀점 요약" class="w-full bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-800 p-3 rounded-xl text-xs outline-none focus:border-brand-mint resize-none"></textarea>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-stone-500">마무리 다짐 및 느낀점 (Reflection)</label>
+                    <input id="newQuestFoot" type="text" placeholder="예: * 다짐: 앞으로 상태 관리는 순수 단방향 흐름으로 통제하겠음." class="w-full bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-800 p-2.5 rounded-xl text-xs outline-none focus:border-brand-mint">
+                </div>
+
+                <!-- EXP and Score setting -->
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-stone-500">일기 승인 시 획득할 경험치 (EXP)</label>
+                    <select id="newQuestExp" class="w-full bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-800 p-2.5 rounded-xl text-xs outline-none focus:border-brand-mint">
+                        <option value="15">+15 EXP</option>
+                        <option value="25">+25 EXP</option>
+                        <option value="35">+35 EXP</option>
+                        <option value="50">+50 EXP (대형 성취!)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="p-4 bg-stone-50 dark:bg-stone-800 border-t border-stone-100 dark:border-stone-700 flex justify-end">
+                <button onclick="saveCustomQuest()" class="bg-brand-mint hover:bg-brand-mintDark text-brand-dark hover:text-white font-bold py-2 px-6 rounded-xl text-xs transition-all flex items-center space-x-1.5 shadow-sm">
+                    <i class="fas fa-save"></i> <span>성장기 추가하기</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Sticky Guestbook Section -->
+    <section id="contact" class="py-20 bg-white dark:bg-stone-900">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-14">
+                <span class="inline-block text-brand-pink text-xs font-game tracking-widest uppercase mb-2 font-sans">Sticky Guestbook</span>
+                <h3 class="text-3xl font-extrabold text-slate-900 dark:text-white font-cute text-4xl">오늘 남긴 고민주의 일기장에 한 줄 보태기</h3>
+                <div class="w-20 h-1 bg-gradient-to-r from-brand-pink to-brand-mint mx-auto mt-3 rounded-full"></div>
+            </div>
+
+            <!-- Sticker Board Guestbook Controller -->
+            <div class="max-w-4xl mx-auto space-y-10">
+                
+                <!-- Guestbook Form -->
+                <div class="bg-brand-bg dark:bg-stone-950 rounded-3xl p-6 border-2 border-dashed border-pink-200 dark:border-stone-800 shadow-sm space-y-4 text-left">
+                    <h4 class="text-lg font-bold text-slate-900 dark:text-stone-100 font-cute text-2xl">✏️ 응원 포스트잇 한 장 붙이기</h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                        <div class="md:col-span-4 space-y-2">
+                            <label class="block text-xs font-bold text-stone-500">작성자 닉네임</label>
+                            <input id="guestName" type="text" placeholder="이름" class="w-full bg-white dark:bg-stone-900 border border-pink-200 dark:border-stone-800 p-2.5 rounded-xl text-xs outline-none focus:border-brand-pink">
+                        </div>
+                        <div class="md:col-span-4 space-y-2">
+                            <label class="block text-xs font-bold text-stone-500">포스트잇 스킨</label>
+                            <select id="guestSkin" class="w-full bg-white dark:bg-stone-900 border border-pink-200 dark:border-stone-800 p-2.5 rounded-xl text-xs outline-none focus:border-brand-pink">
+                                <option value="pink">벚꽃 핑크 🌸</option>
+                                <option value="mint">민트 후레쉬 🌿</option>
+                                <option value="yellow">바나나 레트로 🍌</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-4 space-y-2">
+                            <label class="block text-xs font-bold text-stone-500">메인 스티커</label>
+                            <select id="guestSticker" class="w-full bg-white dark:bg-stone-900 border border-pink-200 dark:border-stone-800 p-2.5 rounded-xl text-xs outline-none focus:border-brand-pink">
+                                <option value="🌸">🌸 벚꽃 꽃송이</option>
+                                <option value="💻">💻 주니어 개발</option>
+                                <option value="🚀">🚀 레벨업 폭발</option>
+                                <option value="⭐">⭐ 별빛 정화</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-stone-500">메시지 (일기체 환영!)</label>
+                        <textarea id="guestMsg" rows="3" placeholder="남길 따뜻한 응원의 한마디를 적어줘..." class="w-full bg-white dark:bg-stone-900 border border-pink-200 dark:border-stone-800 p-3 rounded-xl text-xs outline-none focus:border-brand-pink resize-none"></textarea>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button onclick="addPostIt()" class="bg-brand-pink hover:bg-brand-pinkDark text-white font-bold py-2.5 px-6 rounded-xl text-xs transition-all flex items-center space-x-1.5 active:scale-95 shadow-sm font-cute text-lg">
+                            <i class="fas fa-thumbtack"></i> <span>포스트잇 게시하기</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PostIt Board Masonry Grid -->
+                <div class="text-left">
+                    <h5 class="text-xs font-game text-brand-pinkDark dark:text-brand-pink mb-4">📌 GUEST STICKER WALL</h5>
+                    <div id="stickerBoard" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Dynamic notes generated here -->
+                    </div>
+                </div>
+
+                <!-- Standard Contacts links -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-xl mx-auto pt-10 border-t border-dashed border-stone-200 dark:border-stone-800 font-sans">
+                    <!-- GitHub -->
+                    <a href="https://github.com" target="_blank" onclick="playSound('click')" class="flex flex-col items-center justify-center p-5 bg-stone-50 dark:bg-stone-950/40 hover:bg-stone-900 hover:text-white rounded-2xl border-2 border-pink-100 hover:border-stone-900 hover:shadow-md dark:border-stone-800 dark:hover:bg-stone-800 transition-all duration-300 transform hover:-translate-y-1">
+                        <span class="text-3xl mb-2 text-brand-pink"><i class="fab fa-github"></i></span>
+                        <span class="text-sm font-bold">GitHub</span>
+                        <span class="text-[10px] text-stone-400 mt-1 font-mono">@minju-dev</span>
+                    </a>
+
+                    <!-- Blog -->
+                    <a href="https://velog.io" target="_blank" onclick="playSound('click')" class="flex flex-col items-center justify-center p-5 bg-stone-50 dark:bg-stone-950/40 hover:bg-brand-pink hover:text-white rounded-2xl border-2 border-pink-100 hover:border-brand-pink hover:shadow-md dark:border-stone-800 dark:hover:bg-stone-800 transition-all duration-300 transform hover:-translate-y-1">
+                        <span class="text-3xl mb-2 text-brand-mint"><i class="fas fa-book-open"></i></span>
+                        <span class="text-sm font-bold">Diary Blog</span>
+                        <span class="text-[10px] text-stone-400 mt-1 font-mono">velog.io/@minju</span>
+                    </a>
+
+                    <!-- Email -->
+                    <a href="mailto:minju@growingjournal.com" onclick="playSound('click')" class="flex flex-col items-center justify-center p-5 bg-stone-50 dark:bg-stone-950/40 hover:bg-brand-mint hover:text-brand-dark rounded-2xl border-2 border-pink-100 hover:border-brand-mint hover:shadow-md dark:border-stone-800 dark:hover:bg-stone-800 transition-all duration-300 transform hover:-translate-y-1">
+                        <span class="text-3xl mb-2 text-brand-pink"><i class="fas fa-envelope-open-text"></i></span>
+                        <span class="text-sm font-bold">Email</span>
+                        <span class="text-[10px] text-stone-400 mt-1 font-mono">minju_grow@mail.com</span>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-stone-900 text-stone-400 py-12 border-t border-stone-800 text-sm">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <!-- Left text -->
+                <div class="text-center md:text-left space-y-2">
+                    <div class="flex items-center justify-center md:justify-start space-x-2">
+                        <span class="bg-gradient-to-r from-brand-pink to-brand-mint text-brand-dark px-2 py-0.5 rounded text-[9px] font-game font-sans">GDJ v2.5</span>
+                        <span class="font-bold text-white text-base font-cute text-2xl">고민주의 Growing Developer Journal</span>
+                    </div>
+                    <p class="text-xs text-stone-500 font-sans text-left">
+                        데이터 속 인사이트를 밝혀내고 핑크빛 감성의 완결성 있는 프론트엔드를 그리는 개발자 고민주의 포트폴리오 다이어리입니다.
+                    </p>
+                </div>
+
+                <!-- Right text -->
+                <div class="text-center md:text-right text-xs text-stone-500 font-mono">
+                    <p>© 2026 고민주 Dev Journal. All rights reserved.</p>
+                    <p class="mt-1">Hand-crafted using pure Vanilla JavaScript, CSS, and HTML5.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Logic Script -->
+    <script>
+        // --- 1. Sound Preferences Manager ---
+        const soundToggle = document.getElementById('soundToggle');
+        const soundIcon = document.getElementById('soundIcon');
+
+        soundToggle.addEventListener('click', () => {
+            soundEnabled = !soundEnabled;
+            if (soundEnabled) {
+                soundIcon.className = "fas fa-volume-up text-brand-pink";
+                soundToggle.className = "text-brand-pink border border-pink-200 dark:border-stone-800 hover:border-brand-pink bg-pink-50/50 hover:bg-pink-50 p-2 rounded-xl transition-all shadow-sm";
+                playSound('click');
+                showToast("소리 활성화", "피드백 8비트 사운드가 다시 연주됩니다! 🌿", "success");
+            } else {
+                soundIcon.className = "fas fa-volume-mute";
+                soundToggle.className = "text-stone-400 border border-stone-200 dark:border-stone-800 hover:border-stone-400 bg-stone-50/50 p-2 rounded-xl transition-all shadow-sm";
+                showToast("음소거됨", "소리가 음소거되었습니다. 🔇", "info");
+            }
+        });
+
+        // --- 2. Dark/Light Theme Manager ---
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+            themeIcon.className = "fas fa-sun text-yellow-400";
+        } else {
+            document.documentElement.classList.remove('dark');
+            themeIcon.className = "fas fa-moon";
+        }
+
+        themeToggle.addEventListener('click', () => {
+            playSound('click');
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                themeIcon.className = "fas fa-moon";
+                showToast("라이트 모드", "밝고 따뜻한 아날로그 모드로 환원합니다. 🌸", "info");
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                themeIcon.className = "fas fa-sun text-yellow-400";
+                showToast("다크 모드", "눈이 한결 편안한 개발 스페이스로 진입합니다. 🌌", "success");
+            }
+        });
+
+        // --- 3. Scroll Progress & Dynamic Scroll Bar ---
+        const scrollProgressBar = document.getElementById('scrollProgressBar');
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            scrollProgressBar.style.width = scrollPercent + '%';
+        });
+
+        // --- 4. Mobile Responsive Menu ---
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            playSound('click');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        function toggleMobileMenu() {
+            mobileMenu.classList.add('hidden');
+        }
+
+        // --- 5. Hero Typewriter Effect ---
+        const typewriterSpan = document.getElementById('typewriter');
+        const words = ["고민주", "기록하는 성장의 가치", "데이터 기반의 깊은 분석", "바닐라 코딩 러너"];
+        let wordIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+
+        function type() {
+            const currentWord = words[wordIndex];
+            if (isDeleting) {
+                typewriterSpan.textContent = currentWord.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typewriterSpan.textContent = currentWord.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            if (!isDeleting && charIndex === currentWord.length) {
+                setTimeout(() => isDeleting = true, 1800);
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                wordIndex = (wordIndex + 1) % words.length;
+            }
+
+            const speed = isDeleting ? 40 : 100;
+            setTimeout(type, speed);
+        }
+
+        // --- 6. Slime Interaction Animation (Elastic Squish) ---
+        function squishCharacter() {
+            const character = document.getElementById('heroCharacter');
+            playSound('squish');
+            character.classList.add('animate-squish');
+            
+            // Random cute developer quotes from Slime Minju
+            const slimeQuotes = [
+                "말랑말랑한 저를 관찰하는 것을 좋아하시나요? 🌸",
+                "바닐라 자바스크립트는 단순하지만 무궁무진한 힘을 가집니다!",
+                "오늘 공부한 내용은 퀘스트 목록으로 등록해 경험치로 씹어먹으세요!",
+                "클릭해서 성장을 쌓아나가는 재미는 확실한 보상을 약속합니다. ⭐",
+                "저는 매콤한 논쟁을 즐기는 ENTP 개발 슬라임입니다! 🧪"
+            ];
+            const randQuote = slimeQuotes[Math.floor(Math.random() * slimeQuotes.length)];
+            showToast("슬라임 고민주", randQuote, "info");
+
+            setTimeout(() => {
+                character.classList.remove('animate-squish');
+            }, 600);
+        }
+
+        // --- 7. No-Alert Custom Toast Notification System ---
+        function showToast(title, message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            let borderCol = 'border-brand-pink';
+            let icon = '🌸';
+            
+            if (type === 'success') { 
+                borderCol = 'border-brand-mint'; 
+                icon = '✅'; 
+            } else if (type === 'error') { 
+                borderCol = 'border-red-400'; 
+                icon = '❌'; 
+            } else if (type === 'info') { 
+                borderCol = 'border-yellow-400'; 
+                icon = '💡'; 
+            }
+
+            toast.className = `bg-white dark:bg-stone-900 border-l-4 ${borderCol} p-4 rounded-xl shadow-xl flex items-start space-x-3 transition-all duration-300 transform translate-y-4 opacity-0 max-w-sm pointer-events-auto border border-stone-200 dark:border-stone-800`;
+            
+            toast.innerHTML = `
+                <div class="text-xl">${icon}</div>
+                <div class="flex-1 text-xs">
+                    <p class="font-bold text-stone-900 dark:text-white font-cute text-sm">${title}</p>
+                    <p class="text-stone-500 dark:text-stone-400 mt-0.5 leading-relaxed font-sans">${message}</p>
+                </div>
+                <button onclick="this.parentElement.remove()" class="text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 font-bold">&times;</button>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Trigger transition
+            setTimeout(() => {
+                toast.classList.remove('translate-y-4', 'opacity-0');
+            }, 10);
+            
+            // Auto destroy after 4 seconds
+            setTimeout(() => {
+                if (toast && toast.parentNode) {
+                    toast.classList.add('translate-y-4', 'opacity-0');
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 300);
+                }
+            }, 4000);
+        }
+
+        // --- 8. Persistent RPG State & Storage Management ---
+        let currentLevel = 3;
+        let currentExp = 70;
+        let clearedQuests = []; // Saves quest IDs that are cleared
+
+        function initRpgState() {
+            const savedLevel = localStorage.getItem('gdj_level');
+            const savedExp = localStorage.getItem('gdj_exp');
+            const savedCleared = localStorage.getItem('gdj_cleared_quests');
+
+            if (savedLevel !== null) currentLevel = parseInt(savedLevel);
+            if (savedExp !== null) currentExp = parseInt(savedExp);
+            if (savedCleared !== null) clearedQuests = JSON.parse(savedCleared);
+
+            updateUi();
+        }
+
+        function saveRpgState() {
+            localStorage.setItem('gdj_level', currentLevel);
+            localStorage.setItem('gdj_exp', currentExp);
+            localStorage.setItem('gdj_cleared_quests', JSON.stringify(clearedQuests));
+        }
+
+        function resetRpgProgress() {
+            playSound('trash');
+            currentLevel = 3;
+            currentExp = 70;
+            clearedQuests = [];
+            
+            // Default built-in quests also resets status
+            saveRpgState();
+            
+            // Reload all custom quests to uncleared
+            const quests = getSavedQuests();
+            quests.forEach(q => q.cleared = false);
+            saveQuests(quests);
+
+            updateUi();
+            renderQuests();
+            
+            // Reset Javascript achievement checklist icon
+            const achJs = document.getElementById('achJs');
+            const achJsIcon = document.getElementById('achJsIcon');
+            const achJsState = document.getElementById('achJsState');
+            achJs.className = "flex items-center space-x-3 bg-stone-800/60 p-3 rounded-xl border border-stone-800 transition-colors duration-300";
+            achJsIcon.className = "text-xl filter grayscale";
+            achJsState.textContent = "READ DIARY";
+            achJsState.className = "text-[9px] text-brand-pink font-game";
+
+            showToast("초기화 완료", "성장 레벨이 초기 상태(Lv.03)로 복원되었습니다. 다시 영웅을 육성하세요! 🏆", "info");
+        }
+
+        function getTierInfo(level) {
+            if (level < 4) {
+                return { tier: "BRONZE", title: "브론즈 러너 🏃", character: "초심 가득 성장러" };
+            } else if (level < 6) {
+                return { tier: "SILVER", title: "실버 연금술사 🧪", character: "데이터와 소통하는 자" };
+            } else {
+                return { tier: "GOLD", title: "골드 풀스택 아키텍트 👑", character: "완결성 마스터 코드 러너" };
+            }
+        }
+
+        function feedExp(amount) {
+            currentExp += amount;
+            let levelUpOccurred = false;
+            
+            while (currentExp >= 100) {
+                currentLevel += 1;
+                currentExp = currentExp - 100;
+                levelUpOccurred = true;
+            }
+
+            if (levelUpOccurred) {
+                setTimeout(() => { playSound('levelUp'); }, 100);
+                flashScreen();
+                const info = getTierInfo(currentLevel);
+                showToast("✨ LEVEL UP!! ✨", `축하합니다! 레벨 ${currentLevel}을 돌파해 [${info.title}] 칭호를 획득했습니다!`, "success");
+            } else {
+                playSound('click');
+                showToast("경험치 획득", `+${amount} EXP를 가득 머금었습니다! ⭐`, "success");
+            }
+
+            saveRpgState();
+            updateUi();
+        }
+
+        function updateUi() {
+            const info = getTierInfo(currentLevel);
+
+            // Sync Levels & UI Tags
+            document.getElementById('heroLevel').textContent = String(currentLevel).padStart(2, '0');
+            document.getElementById('archiveTitleBadge').textContent = `DEVELOPER LEVEL ${String(currentLevel).padStart(2, '0')}`;
+            document.getElementById('heroTierBadge').textContent = info.tier;
+            document.getElementById('heroTitleBadge').textContent = info.title;
+            document.getElementById('characterTitle').textContent = info.character;
+
+            // Sync EXPs
+            document.getElementById('heroExpText').textContent = `${currentExp}%`;
+            document.getElementById('heroExpBar').style.width = `${currentExp}%`;
+            
+            document.getElementById('archiveExpVal').textContent = `${currentExp}%`;
+            document.getElementById('archiveExpBar').style.width = `${currentExp}%`;
+
+            const expNeeded = 100 - currentExp;
+            document.getElementById('expNeededLabel').textContent = `Lv.${currentLevel}에서 다음 레벨까지: ${expNeeded} EXP 필요함`;
+        }
+
+        function flashScreen() {
+            const archiveSec = document.getElementById('archive');
+            archiveSec.classList.add('bg-pink-100', 'dark:bg-pink-950/30');
+            setTimeout(() => {
+                archiveSec.classList.remove('bg-pink-100', 'dark:bg-pink-950/30');
+            }, 600);
+        }
+
+        // --- 9. No-Alert Modal Open/Close Core Handlers ---
+        function openModal(modalId) {
+            playSound('pageOpen');
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+        }
+
+        function closeModal(modalId) {
+            playSound('click');
+            const modal = document.getElementById(modalId);
+            modal.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const openModals = document.querySelectorAll('.fixed:not(.hidden)');
+                openModals.forEach(m => {
+                    if (m.id !== 'scrollProgressBar') {
+                        closeModal(m.id);
+                    }
+                });
+            }
+        });
+
+        window.addEventListener('click', (e) => {
+            const modals = ['questViewModal', 'questCreateModal'];
+            modals.forEach(id => {
+                const targetModal = document.getElementById(id);
+                if (e.target === targetModal) {
+                    closeModal(id);
+                }
+            });
+        });
+
+        function highlightArchive() {
+            const archive = document.getElementById('archive');
+            archive.scrollIntoView({ behavior: 'smooth' });
+            archive.classList.add('ring-8', 'ring-brand-pink/30');
+            setTimeout(() => {
+                archive.classList.remove('ring-8', 'ring-brand-pink/30');
+            }, 1500);
+        }
+
+
+        // --- 10. Growth Dynamic Quests Logic System (CRUD + Cleared Status) ---
+        
+        // Built-in starter quests
+        const initialQuests = [
+            {
+                id: "quest-1",
+                title: "공부한 기술: Git 버전 관리의 실체",
+                summary: "늘 헷갈리던 Git의 3가지 핵심 영역 원리를 머릿속에 확실히 규정한 일기.",
+                category: "Git",
+                exp: 10,
+                cleared: false,
+                pinnedText: "📌 Git은 단순히 타임라인 백업이 아니었다.",
+                subtitle: "물리적 영역과 중간 완충지대의 이해",
+                desc: "오늘 Git의 물리적, 논리적 공간의 차이를 확실하게 손으로 그리며 공부했다. 파일을 수정하는 것과 버전으로 박제하는 것 사이에 완충 지대가 있다는 것을 알았다.",
+                bullets: [
+                    "<strong>Working Directory:</strong> 내 에디터 화면상에 존재하는 실제 편집 중인 공간.",
+                    "<strong>Staging Area:</strong> 다음 Commit에 올라타기 전 파일들을 준비 공간에 줄 세워두는 영역.",
+                    "<strong>Repository:</strong> 하나의 영구 스냅샷 버전으로 로컬 기록에 각인되는 저장 영역."
+                ],
+                footnote: "* 느낀점: 이 구조를 이해하고 나니 무분별한 git add .를 삼가고 목적에 충실한 깔끔한 커밋을 남길 수 있을 것 같다.",
+                custom: false
+            },
+            {
+                id: "quest-2",
+                title: "해결한 오류: JS 비동기 렌더링 타이밍",
+                summary: "화면을 그릴 때 필요한 데이터가 불러와지기 전에 선행 렌더가 돌며 발생하던 에러를 물리친 기록.",
+                category: "JavaScript",
+                exp: 20,
+                cleared: false,
+                pinnedText: "📌 텅 빈 화면에 마운트되던 리스트 버그 탈출",
+                subtitle: "선행 렌더링을 차단하는 온전한 상태 제어",
+                desc: "물류 데이터 로그들을 비동기 fetch()를 통해 불러와 렌더링하려 하였으나, 서버에서 데이터가 채 날아오기 전에 DOM을 비우고 가공하는 코드가 성급하게 실행되어 'Uncaught TypeError'를 마주했다.",
+                bullets: [
+                    "<strong>문제상황:</strong> 비동기 통신 응답 지연으로 인한 빈 변수 참조 오류.",
+                    "<strong>해결과정:</strong> async/await 로 페칭 로직을 감싸고, 페칭 완료가 증명된 후에 렌더링 함수를 순차적으로 위임.",
+                    "<strong>결과분석:</strong> 마이크로태스크 큐와 이벤트 루프 흐름 선후 관계 정립 완료."
+                ],
+                footnote: "* 배운점: 자바스크립트의 비동기적 특성을 무시하고 절차 지향적으로 짜는 실수를 완전히 고쳤다.",
+                custom: false
+            },
+            {
+                id: "quest-3",
+                title: "프로젝트 회고: 수동성 지표의 자동화",
+                summary: "매번 수작업 엑셀 정리로 주당 3시간씩 소요되던 지표 집계 과정을 자동화된 스케줄 SQL로 구현해 낸 소중한 성과.",
+                category: "SQL",
+                exp: 30,
+                cleared: false,
+                pinnedText: "📌 반복성 지표 수동 연산의 완전한 타파",
+                subtitle: "엑셀 수작업 VLOOKUP을 SQL 뷰 스키마로 가동",
+                desc: "현업 팀에서 매주 초 지연 시간 수치를 다운받아 VLOOKUP을 돌리던 모습을 보고 비효율을 고치기로 결심하고 구조화된 집계 쿼리를 설계했다.",
+                bullets: [
+                    "<strong>배송 정보 분석:</strong> 각 터미널을 경유할 때의 시차를 추적하는 SQL 윈도우 쿼리 개발.",
+                    "<strong>캐싱 최적화:</strong> 일자별 정체 추이를 캐싱해 두는 최적화 뷰 스키마 탑재.",
+                    "<strong>내보내기 탑재:</strong> 가독성 높은 통계 시트를 마우스 단 한 번의 클릭으로 내려받도록 구조화."
+                ],
+                footnote: "* 회고: 수동 수집의 휴먼 에러율을 제로로 만들고 기획과 지표 설계가 결합한 엔지니어링의 정수를 느꼈다.",
+                custom: false
+            },
+            {
+                id: "quest-4",
+                title: "새로운 도전: TypeScript 타이핑 체계",
+                summary: "실행도 하기 전에 휴먼 에러를 미리 경고하는 엄밀한 정적 검사 도입을 위해 수집하기 시작한 첫 타이핑 노트.",
+                category: "TypeScript",
+                exp: 40,
+                cleared: false,
+                pinnedText: "📌 런타임 이전에 오류를 추적하여 검거하는 엄격함",
+                subtitle: "느슨한 JS의 빈 공간을 타입 시스템으로 보완",
+                desc: "타입 선언이 없던 자바스크립트는 대형 작업을 조율할 때 비어있는 데이터가 기습 유입되어 브라우저를 다운시키는 심각한 부작용을 일으키곤 했다. 이를 안전하게 설계했다.",
+                bullets: [
+                    "<strong>Interface vs Type:</strong> 선언적 확장 강점이 있는 구체화 인터페이스 사용법 습득.",
+                    "<strong>Generic API:</strong> 유동적인 파라미터 구조를 다재다능하게 수용하면서 안전성을 살리는 범용 구조 설계.",
+                    "<strong>엄격한 정적 검사:</strong> 에디터 단계에서 선제 경고를 받아 컴파일 효율 극대화."
+                ],
+                footnote: "* 다짐: 완결성 높은 시스템 구축을 위해 매일 일기장에 타입 정의 문제를 꾸준히 연습하겠다.",
+                custom: false
+            }
+        ];
+
+        let selectedQuestId = null;
+
+        function getSavedQuests() {
+            const saved = localStorage.getItem('gdj_quests_list');
+            if (saved) {
+                return JSON.parse(saved);
+            }
+            localStorage.setItem('gdj_quests_list', JSON.stringify(initialQuests));
+            return initialQuests;
+        }
+
+        function saveQuests(questsList) {
+            localStorage.setItem('gdj_quests_list', JSON.stringify(questsList));
+        }
+
+        function renderQuests() {
+            const quests = getSavedQuests();
+            const grid = document.getElementById('questsGrid');
+            grid.innerHTML = '';
+
+            quests.forEach(q => {
+                // Determine Category Styles
+                let catBadge = "bg-pink-50 dark:bg-pink-950/40 text-brand-pinkDark dark:text-brand-pink";
+                if (q.category === 'JavaScript' || q.category === 'React') {
+                    catBadge = "bg-emerald-50 dark:bg-emerald-950/40 text-brand-mintDark dark:text-brand-mint";
+                } else if (q.category === 'SQL') {
+                    catBadge = "bg-yellow-100 dark:bg-yellow-950/30 text-yellow-800 dark:text-yellow-400";
+                }
+
+                const isCleared = clearedQuests.includes(q.id);
+
+                const card = document.createElement('div');
+                card.className = `bg-white dark:bg-stone-900 border-2 ${isCleared ? 'border-brand-mint dark:border-brand-mint/60' : 'border-pink-100 dark:border-stone-800 hover:border-brand-pink'} p-6 rounded-3xl shadow-xs hover:shadow-md transition-all transform hover:-translate-y-1 cursor-pointer flex flex-col justify-between group`;
+                card.onclick = () => viewQuestDetails(q.id);
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-center mb-4 font-sans">
+                            <span class="text-[9px] ${catBadge} px-2.5 py-1 rounded font-game uppercase">${q.category}</span>
+                            <span class="text-xs font-bold ${isCleared ? 'text-brand-mint' : 'text-brand-pink'} font-sans">
+                                ${isCleared ? '<i class="fas fa-check-circle"></i> CLEARED' : `<i class="fas fa-star text-brand-mint"></i> +${q.exp} EXP`}
+                            </span>
+                        </div>
+                        <h4 class="text-lg font-bold text-slate-800 dark:text-stone-100 group-hover:text-brand-pinkDark dark:group-hover:text-brand-mint transition-colors font-cute text-2xl leading-snug">${q.title}</h4>
+                        <p class="text-xs text-brand-slate dark:text-stone-300 mt-2 leading-relaxed font-sans">
+                            ${q.summary}
+                        </p>
+                    </div>
+                    <div class="mt-6 flex justify-between items-center text-xs font-semibold ${isCleared ? 'text-brand-mint' : 'text-brand-pinkDark dark:text-brand-pink'} pt-4 border-t border-dashed border-stone-100 dark:border-stone-800 font-cute text-xl">
+                        <span>일기장 들여다보기</span>
+                        <i class="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function viewQuestDetails(questId) {
+            const quests = getSavedQuests();
+            const quest = quests.find(q => q.id === questId);
+            if (!quest) return;
+
+            selectedQuestId = questId;
+
+            // Populate Modal Content
+            document.getElementById('questModalTitle').textContent = quest.title;
+            document.getElementById('questModalSub').textContent = quest.pinnedText || `📌 ${quest.subtitle}`;
+            document.getElementById('questModalDesc').textContent = quest.desc;
+            document.getElementById('questModalFoot').textContent = quest.footnote;
+            
+            // Render bullets
+            const bulletsUl = document.getElementById('questModalBullets');
+            bulletsUl.innerHTML = '';
+            quest.bullets.forEach(b => {
+                const li = document.createElement('li');
+                li.innerHTML = b;
+                bulletsUl.appendChild(li);
+            });
+
+            // Adjust Delete options for Custom Quests
+            const deleteBtn = document.getElementById('questModalDeleteBtn');
+            if (quest.custom) {
+                deleteBtn.classList.remove('hidden');
+            } else {
+                deleteBtn.classList.add('hidden');
+            }
+
+            // Sync Cleared States
+            const isCleared = clearedQuests.includes(questId);
+            const approveBtn = document.getElementById('questModalApproveBtn');
+            const approvedMsg = document.getElementById('questModalApprovedMsg');
+
+            if (isCleared) {
+                approveBtn.classList.add('hidden');
+                approvedMsg.classList.remove('hidden');
+            } else {
+                approveBtn.classList.remove('hidden');
+                approvedMsg.classList.add('hidden');
+                document.getElementById('questModalExpBadge').textContent = `+${quest.exp} EXP`;
+                
+                // Set click action dynamically
+                approveBtn.onclick = () => {
+                    claimQuestReward(quest.id, quest.exp);
+                };
+            }
+
+            openModal('questViewModal');
+        }
+
+        function claimQuestReward(questId, expReward) {
+            if (clearedQuests.includes(questId)) return;
+
+            // Update Cleared States
+            clearedQuests.push(questId);
+            saveRpgState();
+
+            // Special trigger for Javascript Cleared checklist state sync
+            if (questId === 'quest-2') {
+                const achJs = document.getElementById('achJs');
+                const achJsIcon = document.getElementById('achJsIcon');
+                const achJsState = document.getElementById('achJsState');
+                
+                achJs.classList.add('bg-pink-950/40', 'border-brand-pink');
+                achJs.classList.remove('bg-stone-800/60', 'border-stone-800');
+                achJsIcon.classList.remove('filter', 'grayscale');
+                achJsState.textContent = "CLEARED";
+                achJsState.className = "text-[9px] text-brand-pink font-game";
+            }
+
+            closeModal('questViewModal');
+
+            // Timeout reward giving for smooth UI transition
+            setTimeout(() => {
+                feedExp(expReward);
+                playSound('pageOpen');
+                renderQuests();
+                showToast("기록 승인 완료", `성장 기록 승인으로 +${expReward} EXP를 축적했습니다.`, "success");
+            }, 300);
+        }
+
+        function triggerDeleteQuest() {
+            if (!selectedQuestId) return;
+            
+            let quests = getSavedQuests();
+            quests = quests.filter(q => q.id !== selectedQuestId);
+            saveQuests(quests);
+
+            // Also remove from cleared if it was
+            clearedQuests = clearedQuests.filter(id => id !== selectedQuestId);
+            saveRpgState();
+
+            closeModal('questViewModal');
+            playSound('trash');
+            renderQuests();
+            showToast("기록 파기됨", "작성하신 커스텀 성장 일기를 아카이브에서 안전하게 삭제했습니다.", "info");
+        }
+
+        function openCreateQuestModal() {
+            // Pre-fill fields with empty or defaults
+            document.getElementById('newQuestTitle').value = '';
+            document.getElementById('newQuestSummary').value = '';
+            document.getElementById('newQuestSubtitle').value = '';
+            document.getElementById('newQuestDesc').value = '';
+            document.getElementById('newQuestBullets').value = '';
+            document.getElementById('newQuestFoot').value = '';
+            document.getElementById('newQuestExp').value = '15';
+
+            openModal('questCreateModal');
+        }
+
+        function saveCustomQuest() {
+            const titleInput = document.getElementById('newQuestTitle');
+            const summaryInput = document.getElementById('newQuestSummary');
+            const subtitleInput = document.getElementById('newQuestSubtitle');
+            const descInput = document.getElementById('newQuestDesc');
+            const bulletsInput = document.getElementById('newQuestBullets');
+            const footInput = document.getElementById('newQuestFoot');
+            const expSelect = document.getElementById('newQuestExp');
+            const catSelect = document.getElementById('newQuestCategory');
+
+            if (!titleInput.value.trim() || !summaryInput.value.trim() || !descInput.value.trim()) {
+                playSound('quizWrong');
+                showToast("입력 오류", "일기의 제목, 요약, 상세 내용은 필수로 기록해야 합니다. 🌸", "error");
+                return;
+            }
+
+            const rawBullets = bulletsInput.value.trim();
+            const bulletLines = rawBullets ? rawBullets.split('\n').map(b => `<strong>포인트:</strong> ${b.trim()}`) : ["<strong>포인트:</strong> 스스로 습득한 유의미한 코드 자각 완료"];
+
+            const newQuest = {
+                id: "custom-" + Date.now(),
+                title: titleInput.value.trim(),
+                summary: summaryInput.value.trim(),
+                category: catSelect.value,
+                exp: parseInt(expSelect.value),
+                cleared: false,
+                pinnedText: subtitleInput.value.trim() || `📌 ${titleInput.value.trim()}`,
+                subtitle: subtitleInput.value.trim() || "오늘의 학습 탐구 완료",
+                desc: descInput.value.trim(),
+                bullets: bulletLines,
+                footnote: footInput.value.trim() || "* 각오: 매일 꾸준한 기록을 통해 완결성 높은 개발자로 도약하겠음.",
+                custom: true
+            };
+
+            const quests = getSavedQuests();
+            quests.unshift(newQuest); // Push new custom quest to the beginning of list
+            saveQuests(quests);
+
+            closeModal('questCreateModal');
+            playSound('pageOpen');
+            renderQuests();
+
+            showToast("기록 장착 완료", "새로운 공부 로그가 아카이브 목록에 장착되었습니다. 클릭해 승인을 받고 경험치를 채워보세요! 🚀", "success");
+        }
+
+
+        // --- 11. Retro Arcade Style Trivia Quiz Implementation ---
+        const quizList = [
+            {
+                q: "Q. Git에서 원격저장소에 보낼 Commit 대기 대상 파일들이 올라가 있는 임시 준비 영역의 이름은 무엇일까?",
+                o: ["1) Local Storage", "2) Staging Area", "3) Working Tree"],
+                a: 1
+            },
+            {
+                q: "Q. 자바스크립트에서 대기(Pending) 상태를 거쳐 최종 결과를 비동기적으로 전달받기 위해 생성하는 기본 객체는?",
+                o: ["1) Promise", "2) Object.assign", "3) Async Function"],
+                a: 0
+            },
+            {
+                q: "Q. 테이블 전체를 조회하기보다 특정 조건 행만을 거르기 위해 SQL에서 꼭 사용하는 조건 문법은?",
+                o: ["1) GROUP BY", "2) WHERE", "3) ORDER BY"],
+                a: 1
+            },
+            {
+                q: "Q. HTML에서 검색 포털이나 웹 표준 수집기 로봇이 페이지의 내용을 정밀히 해독하도록 돕는 의미론적 태그의 이름은?",
+                o: ["1) Div Tag", "2) Semantic Tag", "3) Inline Tag"],
+                a: 1
+            },
+            {
+                q: "Q. CSS 레이아웃 중 자식 요소들을 단일 행 또는 단일 열의 1차원 공간 형태로 자유롭게 안착시키는 최적의 레이아웃 규칙은?",
+                o: ["1) Grid", "2) Inline-Block", "3) Flexbox"],
+                a: 2
+            }
+        ];
+        
+        let currentQuizIndex = 0;
+        let correctAnswersCount = 0;
+
+        function loadQuiz() {
+            const currentQuiz = quizList[currentQuizIndex];
+            document.getElementById('quizStepLabel').textContent = `질문 ${currentQuizIndex + 1} of ${quizList.length}`;
+            document.getElementById('quizScoreLabel').textContent = `점수: ${correctAnswersCount}`;
+            document.getElementById('quizQuestion').textContent = currentQuiz.q;
+            
+            const optionsContainer = document.getElementById('quizOptions');
+            optionsContainer.innerHTML = '';
+            
+            currentQuiz.o.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left bg-stone-950 hover:bg-stone-700 border border-stone-700 py-2 px-3 rounded-xl transition-all text-slate-100 focus:outline-none";
+                btn.textContent = opt;
+                btn.onclick = () => checkQuizAnswer(idx);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkQuizAnswer(choiceIdx) {
+            const quiz = quizList[currentQuizIndex];
+            const feedbackArea = document.getElementById('quizFeedback');
+            const resultText = document.getElementById('quizResultText');
+            const nextBtn = document.getElementById('quizNextBtn');
+            
+            if (choiceIdx === quiz.a) {
+                playSound('quizCorrect');
+                correctAnswersCount += 10;
+                resultText.textContent = "🎯 정답이다! (+25 EXP 획득!)";
+                resultText.className = "font-bold font-cute text-lg text-brand-mint";
+                feedExp(25);
+            } else {
+                playSound('quizWrong');
+                resultText.textContent = "❌ 틀렸다! 다음 문제에서 만회해 보자.";
+                resultText.className = "font-bold font-cute text-lg text-brand-pink";
+            }
+            
+            document.getElementById('quizContainer').classList.add('hidden');
+            feedbackArea.classList.remove('hidden');
+
+            if (currentQuizIndex === quizList.length - 1) {
+                nextBtn.textContent = "🏆 퀴즈 격파 완료! 결과 보기";
+            } else {
+                nextBtn.textContent = "다음 문제 풀기 ➔";
+            }
+        }
+
+        function nextQuiz() {
+            if (currentQuizIndex === quizList.length - 1) {
+                // End State of Quiz
+                const feedbackArea = document.getElementById('quizFeedback');
+                const resultText = document.getElementById('quizResultText');
+                
+                resultText.innerHTML = `
+                    <div class="space-y-1">
+                        <p class="font-game text-xs text-yellow-400">QUIZ CLEARED!</p>
+                        <p class="text-sm">학습 퀴즈를 모두 격파했습니다! 🎓</p>
+                        <p class="text-xs text-slate-400">총 획득한 퀴즈 점수: ${correctAnswersCount} 점</p>
+                    </div>
+                `;
+                
+                const nextBtn = document.getElementById('quizNextBtn');
+                nextBtn.textContent = "처음부터 다시 풀기 🔄";
+                nextBtn.onclick = () => {
+                    currentQuizIndex = 0;
+                    correctAnswersCount = 0;
+                    nextBtn.onclick = nextQuiz; // Restore click bindings
+                    nextQuiz();
+                };
+            } else {
+                currentQuizIndex = (currentQuizIndex + 1) % quizList.length;
+                document.getElementById('quizContainer').classList.remove('hidden');
+                document.getElementById('quizFeedback').classList.add('hidden');
+                loadQuiz();
+            }
+        }
+
+
+        // --- 12. LocalStorage Sticky Guestbook Board with Poof Delete Animation ---
+        const defaultNotes = [
+            { id: 1, name: "멋쟁이 분석가", text: "데이터 분석 능력이 있으니 개발 구현도 남다르네! 응원하고 갑니다.", skin: "pink", sticker: "🌸", date: "2026.07.13" },
+            { id: 2, name: "시니어 FE", text: "바닐라 코딩에 대한 애착이 돋보입니다. 기본기가 엄청 짱짱하네요!", skin: "mint", sticker: "💻", date: "2026.07.13" }
+        ];
+
+        function getSavedNotes() {
+            const saved = localStorage.getItem('gdj_notes');
+            if (saved) {
+                return JSON.parse(saved);
+            }
+            localStorage.setItem('gdj_notes', JSON.stringify(defaultNotes));
+            return defaultNotes;
+        }
+
+        function saveNotes(notes) {
+            localStorage.setItem('gdj_notes', JSON.stringify(notes));
+        }
+
+        function renderStickerBoard() {
+            const notes = getSavedNotes();
+            const board = document.getElementById('stickerBoard');
+            board.innerHTML = '';
+            
+            notes.forEach(note => {
+                const card = document.createElement('div');
+                
+                // Set pastel color classes based on skin
+                let skinBg = "bg-pink-100 dark:bg-pink-950/40 text-stone-900 border-pink-200";
+                if (note.skin === 'mint') skinBg = "bg-emerald-100 dark:bg-emerald-950/40 text-stone-900 border-emerald-200";
+                if (note.skin === 'yellow') skinBg = "bg-yellow-100 dark:bg-yellow-950/40 text-stone-900 border-yellow-200";
+
+                card.className = `${skinBg} border-2 rounded-2xl p-5 relative shadow-sm hover:shadow-md transition-all duration-300 transform hover:-rotate-1 space-y-3 font-cute text-lg text-stone-800 dark:text-stone-100 group`;
+                
+                card.innerHTML = `
+                    <div class="absolute -top-3 -right-2 text-2xl animate-bounce-slow" style="animation-delay: ${note.id % 5 * 0.2}s">
+                        ${note.sticker}
+                    </div>
+                    <div class="flex justify-between items-center text-xs font-bold font-sans text-stone-500 dark:text-stone-400">
+                        <span>✏️ ${note.name}의 기록</span>
+                        <div class="flex items-center space-x-2">
+                            <span>${note.date}</span>
+                            <button onclick="deletePostIt(${note.id})" class="text-stone-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity p-0.5" title="삭제하기">
+                                <i class="fas fa-trash text-[10px]"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="leading-relaxed whitespace-pre-line text-lg text-stone-800 dark:text-stone-200">
+                        "${note.text}"
+                    </p>
+                `;
+                board.appendChild(card);
+            });
+        }
+
+        function deletePostIt(id) {
+            playSound('trash');
+            let notes = getSavedNotes();
+            notes = notes.filter(n => n.id !== id);
+            saveNotes(notes);
+            renderStickerBoard();
+            showToast("방명록 파기 완료", "작성하신 소중한 응원 포스트잇 스티커를 보드에서 걷어냈습니다. 🌿", "info");
+        }
+
+        function addPostIt() {
+            const nameInput = document.getElementById('guestName');
+            const skinSelect = document.getElementById('guestSkin');
+            const stickerSelect = document.getElementById('guestSticker');
+            const msgInput = document.getElementById('guestMsg');
+
+            if (!nameInput.value.trim() || !msgInput.value.trim()) {
+                playSound('quizWrong');
+                showToast("입력 오류", "방명록 게시를 위해 이름과 응원 한 마디 내용을 기재해 주세요! 🌸", "error");
+                return;
+            }
+
+            playSound('click');
+            const notes = getSavedNotes();
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, '0')}.${String(today.getDate()).padStart(2, '0')}`;
+
+            const newNote = {
+                id: Date.now(),
+                name: nameInput.value.trim(),
+                text: msgInput.value.trim(),
+                skin: skinSelect.value,
+                sticker: stickerSelect.value,
+                date: dateStr
+            };
+
+            notes.unshift(newNote); // Prepend to top
+            saveNotes(notes);
+            renderStickerBoard();
+
+            // Clear input
+            nameInput.value = '';
+            msgInput.value = '';
+
+            showToast("포스트잇 부착 성공!", "민주님의 일기장 방명록 벽면에 새로운 스티커가 잘 부착되었습니다. 감사드립니다! 🌿", "success");
+        }
+
+        // Initialize App on Window Load
+        window.onload = function() {
+            initRpgState();
+            type();
+            loadQuiz();
+            renderQuests();
+            renderStickerBoard();
+        }
+    </script>
+</body>
+</html>
